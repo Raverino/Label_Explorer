@@ -1,0 +1,180 @@
+{
+ "id": "FI",
+ "name": "Finland",
+ "available": true,
+ "scheme": "Energiatodistus (E-luku)",
+ "method": "Ympäristöministeriö decree 1048/2017 + calculation guideline",
+ "legal_basis": "Decree 1048/2017 Annex 2",
+ "climate": [
+  "FI"
+ ],
+ "floor_area": {
+  "code": "A_netto",
+  "name": "net heated area",
+  "basis": "internal",
+  "status": "official"
+ },
+ "label": {
+  "version": "1048/2017",
+  "valid_from": "2018-01-01",
+  "indicator": "weighted",
+  "indicator_name": "E-luku (weighted purchased energy)",
+  "unit": "kWhE/m2.a",
+  "scale_type": "area_formula",
+  "area_bands": [
+   {
+    "area_min": 50,
+    "area_max": 150,
+    "formulas": [
+     {
+      "class": "A",
+      "c": 110,
+      "k": -0.2
+     },
+     {
+      "class": "B",
+      "c": 215,
+      "k": -0.6
+     },
+     {
+      "class": "C",
+      "c": 252,
+      "k": -0.6
+     },
+     {
+      "class": "D",
+      "c": 332,
+      "k": -0.6
+     },
+     {
+      "class": "E",
+      "c": 462,
+      "k": -0.6
+     },
+     {
+      "class": "F",
+      "c": 532,
+      "k": -0.6
+     },
+     {
+      "class": "G",
+      "c": null,
+      "k": null
+     }
+    ]
+   },
+   {
+    "area_min": 150,
+    "area_max": 600,
+    "formulas": [
+     {
+      "class": "A",
+      "c": 83,
+      "k": -0.02
+     },
+     {
+      "class": "B",
+      "c": 131,
+      "k": -0.04
+     },
+     {
+      "class": "C",
+      "c": 173,
+      "k": -0.07
+     },
+     {
+      "class": "D",
+      "c": 253,
+      "k": -0.07
+     },
+     {
+      "class": "E",
+      "c": 383,
+      "k": -0.07
+     },
+     {
+      "class": "F",
+      "c": 453,
+      "k": -0.07
+     },
+     {
+      "class": "G",
+      "c": null,
+      "k": null
+     }
+    ]
+   },
+   {
+    "area_min": 600,
+    "area_max": null,
+    "formulas": [
+     {
+      "class": "A",
+      "c": 70,
+      "k": 0
+     },
+     {
+      "class": "B",
+      "c": 106,
+      "k": 0
+     },
+     {
+      "class": "C",
+      "c": 130,
+      "k": 0
+     },
+     {
+      "class": "D",
+      "c": 210,
+      "k": 0
+     },
+     {
+      "class": "E",
+      "c": 340,
+      "k": 0
+     },
+     {
+      "class": "F",
+      "c": 410,
+      "k": 0
+     },
+     {
+      "class": "G",
+      "c": null,
+      "k": null
+     }
+    ]
+   }
+  ],
+  "formula_note": "max = c + k * A_netto. E-luku is rounded UP to an integer before classing. >600 m2 A limit (70) inferred from B starting at 71.",
+  "status": "official",
+  "source": "https://finlex.fi/api/media/statute/53865/mainPdf/main.pdf"
+ },
+ "factors": {
+  "electricity": {
+   "weight": 1.2,
+   "status": "official",
+   "source": "https://finlex.fi/api/media/statute/53865/mainPdf/main.pdf"
+  },
+  "district_heat": {
+   "weight": 0.5,
+   "status": "official",
+   "source": "https://finlex.fi/api/media/statute/53865/mainPdf/main.pdf"
+  },
+  "fossil_fuels": {
+   "weight": 1.0,
+   "status": "official",
+   "source": "https://finlex.fi/api/media/statute/53865/mainPdf/main.pdf"
+  },
+  "renewable_fuels": {
+   "weight": 0.5,
+   "status": "official",
+   "source": "https://finlex.fi/api/media/statute/53865/mainPdf/main.pdf"
+  }
+ },
+ "pv_rule": "Only self-consumed PV is credited; export is not.",
+ "gaps": [
+  "March 2026 draft amendment",
+  "Usage values from decree 1010/2017 (stored values are unverified)"
+ ]
+}

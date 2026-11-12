@@ -1,0 +1,15 @@
+{
+ "meta": {
+  "generated": "2026-11-10",
+  "status": "typical",
+  "basis": "typical design value (EN ISO 10456 / manufacturer ranges)"
+ },
+ "defaults": {
+  "heating_setpoint_C": 20,
+  "internal_gains_W_m2": 3.0,
+  "dhw_kWh_m2a": 15,
+  "occupancy_note": "per m2 values; country conventions override",
+  "household_electricity_kWh_m2a": 25,
+  "status": "assumption"
+ }
+}

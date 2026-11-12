@@ -1,0 +1,123 @@
+{
+ "id": "BE-WAL",
+ "name": "Belgium - Wallonia",
+ "map_id": "BE",
+ "available": true,
+ "scheme": "Certificat PEB",
+ "method": "PEB / PER method (AGW PEB 2026 Annex A1)",
+ "legal_basis": "Décret PEB 28 Nov 2013; AGW PEB",
+ "climate": [
+  "BE"
+ ],
+ "floor_area": {
+  "code": "Ach",
+  "name": "heated floor area",
+  "basis": "gross_external",
+  "status": "unverified"
+ },
+ "label": {
+  "version": "Wallonia PEB",
+  "valid_from": "2016",
+  "indicator": "pe_tot",
+  "indicator_name": "Espec total primary energy",
+  "unit": "kWh/m2.yr",
+  "scale": {
+   "classes": [
+    {
+     "class": "A++",
+     "max": 0
+    },
+    {
+     "class": "A+",
+     "max": 45
+    },
+    {
+     "class": "A",
+     "max": 85
+    },
+    {
+     "class": "B",
+     "max": 170
+    },
+    {
+     "class": "C",
+     "max": 255
+    },
+    {
+     "class": "D",
+     "max": 340
+    },
+    {
+     "class": "E",
+     "max": 425
+    },
+    {
+     "class": "F",
+     "max": 510
+    },
+    {
+     "class": "G",
+     "max": null
+    }
+   ],
+   "status": "secondary",
+   "strictly_below": false
+  },
+  "source": "https://www.certinergie.be/en/energy-performance-certificate/epc-certificate-wallonia/",
+  "note": "Same limits at Certinergie, Atlas Contrôle and the 2026 Certinergie barometer (2026-11-12); the SPW annex itself not read. Some sites show a table shifted by one class - those are wrong."
+ },
+ "factors": {
+  "source_doc": "AGW PEB 2026 Annex A1 (PER), Annexe F, Tableau [29]",
+  "electricity": {
+   "pe_tot": 2.5,
+   "status": "official",
+   "source": "https://energie.wallonie.be/files/PEB/Pour%20les%20professionnels/Outils/La%20r%c3%a9glementation%20wallonne%20-%20PEB/Exigences%20PEB/R%c3%a9gl.%20PEB%20apd%2001.01.26/AGW%20PEB%202026_Annexe%20A1%20(PER).pdf",
+   "note": "Same 2.5 for PV and CHP electricity. Table CO2 0.179 (unit per MJ; basis unverified)"
+  },
+  "gas": {
+   "pe_tot": 1.0,
+   "status": "official",
+   "source": "https://energie.wallonie.be/files/PEB/Pour%20les%20professionnels/Outils/La%20r%c3%a9glementation%20wallonne%20-%20PEB/Exigences%20PEB/R%c3%a9gl.%20PEB%20apd%2001.01.26/AGW%20PEB%202026_Annexe%20A1%20(PER).pdf",
+   "note": "NCV/GCV 0.90; table CO2 0.056 kg/MJ = 0.202 kg/kWh"
+  },
+  "oil": {
+   "pe_tot": 1.0,
+   "status": "official",
+   "source": "https://energie.wallonie.be/files/PEB/Pour%20les%20professionnels/Outils/La%20r%c3%a9glementation%20wallonne%20-%20PEB/Exigences%20PEB/R%c3%a9gl.%20PEB%20apd%2001.01.26/AGW%20PEB%202026_Annexe%20A1%20(PER).pdf",
+   "note": "table CO2 0.073 kg/MJ"
+  },
+  "wood": {
+   "pe_tot": 1.0,
+   "co2": 0.0,
+   "status": "official",
+   "source": "https://energie.wallonie.be/files/PEB/Pour%20les%20professionnels/Outils/La%20r%c3%a9glementation%20wallonne%20-%20PEB/Exigences%20PEB/R%c3%a9gl.%20PEB%20apd%2001.01.26/AGW%20PEB%202026_Annexe%20A1%20(PER).pdf"
+  },
+  "district_heat": {
+   "pe_tot": 2.0,
+   "status": "official",
+   "source": "https://energie.wallonie.be/files/PEB/Pour%20les%20professionnels/Outils/La%20r%c3%a9glementation%20wallonne%20-%20PEB/Exigences%20PEB/R%c3%a9gl.%20PEB%20apd%2001.01.26/AGW%20PEB%202026_Annexe%20A1%20(PER).pdf",
+   "note": "Default when not determined in detail"
+  },
+  "ambient_heat": {
+   "pe_tot": 1.0,
+   "co2": 0.0,
+   "status": "official",
+   "source": "https://energie.wallonie.be/files/PEB/Pour%20les%20professionnels/Outils/La%20r%c3%a9glementation%20wallonne%20-%20PEB/Exigences%20PEB/R%c3%a9gl.%20PEB%20apd%2001.01.26/AGW%20PEB%202026_Annexe%20A1%20(PER).pdf"
+  }
+ },
+ "requirements": {
+  "Ew": {
+   "max": 45
+  },
+  "Espec": {
+   "max": 85
+  },
+  "status": "official",
+  "source": "https://energie.wallonie.be/files/PEB/B%c3%a2timents%20r%c3%a9sidentiels/Nouvelle%20construction/Outils/Conseils%20pratiques%20-%20publications/Guide%20pratique%20pour%20construire%20votre%20logement%20QZen/brochure%20QZen_2026.pdf"
+ },
+ "gaps": [
+  "Official band table from SPW",
+  "Floor-area definition",
+  "CO2 column unit basis"
+ ]
+}

@@ -1,0 +1,160 @@
+{
+ "id": "AT",
+ "name": "Austria",
+ "available": true,
+ "scheme": "Energieausweis (OIB-RL 6, 2025)",
+ "method": "ÖNORM B 8110-6-1 / H 5056-1 (monthly, mapped to EN ISO 52016-1)",
+ "legal_basis": "OIB-Richtlinie 6 (Sept 2025) as adopted by each Land (e.g. Tir. LGBl. 59/2026)",
+ "climate": [
+  "AT"
+ ],
+ "climate_note": "Label uses the site climate; Vienna is the default site in the app.",
+ "floor_area": {
+  "code": "BGF",
+  "name": "Bruttogrundfläche (gross floor area)",
+  "basis": "gross_external",
+  "status": "official"
+ },
+ "label": {
+  "version": "OIB-RL 6 2025",
+  "valid_from": "2026-01-01",
+  "indicator": "dual",
+  "indicator_name": "HWB_Ref,SK (heating need) and EEB_SK (final energy incl. household electricity)",
+  "unit": "kWh/m2.a",
+  "dual_scale": {
+   "HWB_Ref_SK": [
+    {
+     "class": "A",
+     "max": 40
+    },
+    {
+     "class": "B",
+     "max": 60
+    },
+    {
+     "class": "C",
+     "max": 75
+    },
+    {
+     "class": "D",
+     "max": 85
+    },
+    {
+     "class": "E",
+     "max": 100
+    },
+    {
+     "class": "F",
+     "max": 120
+    },
+    {
+     "class": "G",
+     "max": null
+    }
+   ],
+   "EEB_SK": [
+    {
+     "class": "A",
+     "max": 90
+    },
+    {
+     "class": "B",
+     "max": 110
+    },
+    {
+     "class": "C",
+     "max": 125
+    },
+    {
+     "class": "D",
+     "max": 140
+    },
+    {
+     "class": "E",
+     "max": 155
+    },
+    {
+     "class": "F",
+     "max": 175
+    },
+    {
+     "class": "G",
+     "max": null
+    }
+   ],
+   "status": "official"
+  },
+  "combine_rule": {
+   "rule": "worse_of",
+   "status": "assumption",
+   "source": "https://www.tirol.gv.at/fileadmin/themen/bauen-wohnen/baupolizei/20260219_Zentrale_%C3%84nderungen_der_OIB_Richtlinie_6_im_Jahr_2025.pdf#page=21",
+   "note": "Official (OIB-RL 6 2025, page 1 of the Energieausweis): the scale shows BOTH the reference heating need and the final energy, site climate; there is no single headline class. The app needs one letter for the comparison and uses the worse of the two (app choice)."
+  },
+  "fossil_rule": "Fossil-heated buildings are labelled 'B fossil' .. 'G fossil' and cannot reach A.",
+  "source": "https://www.ris.bka.gv.at/Dokumente/LgblAuth/LGBLA_TI_20260715_59/Anlage_59_TBV2026_Anlage6_KM.pdf"
+ },
+ "factors": {
+  "valid_from": "2026",
+  "valid_to": "2035",
+  "source_doc": "OIB-RL 6 2025",
+  "electricity": {
+   "pe_tot": 1.43,
+   "pe_nren": 0.43,
+   "co2": 0.074,
+   "status": "official",
+   "source": "https://www.tirol.gv.at/fileadmin/themen/bauen-wohnen/baupolizei/20260219_Zentrale_%C3%84nderungen_der_OIB_Richtlinie_6_im_Jahr_2025.pdf"
+  },
+  "gas": {
+   "pe_tot": 1.1,
+   "pe_nren": 1.1,
+   "co2": 0.201,
+   "status": "official",
+   "source": "https://www.tirol.gv.at/fileadmin/themen/bauen-wohnen/baupolizei/20260219_Zentrale_%C3%84nderungen_der_OIB_Richtlinie_6_im_Jahr_2025.pdf"
+  },
+  "district_heat_renewable": {
+   "pe_tot": 1.27,
+   "pe_nren": 0.07,
+   "co2": 0.025,
+   "status": "official",
+   "source": "https://www.tirol.gv.at/fileadmin/themen/bauen-wohnen/baupolizei/20260219_Zentrale_%C3%84nderungen_der_OIB_Richtlinie_6_im_Jahr_2025.pdf"
+  },
+  "district_heat_nonrenewable": {
+   "pe_tot": 1.19,
+   "pe_nren": 0.8,
+   "status": "official",
+   "source": "https://www.tirol.gv.at/fileadmin/themen/bauen-wohnen/baupolizei/20260219_Zentrale_%C3%84nderungen_der_OIB_Richtlinie_6_im_Jahr_2025.pdf"
+  },
+  "district_heat_chp": {
+   "pe_tot": 0.71,
+   "pe_nren": 0.05,
+   "co2": 0.022,
+   "status": "official",
+   "source": "https://www.tirol.gv.at/fileadmin/themen/bauen-wohnen/baupolizei/20260219_Zentrale_%C3%84nderungen_der_OIB_Richtlinie_6_im_Jahr_2025.pdf"
+  }
+ },
+ "requirements": {
+  "HWB_Ref_RK": {
+   "formula": "9*(1+3.0/lc)  (8*(1+3.0/lc) from 2030)",
+   "unit": "kWh/m2.a",
+   "status": "official",
+   "source": "https://www.ris.bka.gv.at/Dokumente/LgblAuth/LGBLA_TI_20260715_59/Anlage_59_TBV2026_Anlage6_KM.pdf"
+  }
+ },
+ "conventions": {
+  "heating_setpoint_C": {
+   "value": 20,
+   "status": "official",
+   "source": "https://www.tirol.gv.at/fileadmin/themen/bauen-wohnen/baupolizei/20260219_Zentrale_%C3%84nderungen_der_OIB_Richtlinie_6_im_Jahr_2025.pdf"
+  },
+  "heating_limit_C": {
+   "value": 12,
+   "status": "official",
+   "source": "https://www.tirol.gv.at/fileadmin/themen/bauen-wohnen/baupolizei/20260219_Zentrale_%C3%84nderungen_der_OIB_Richtlinie_6_im_Jahr_2025.pdf"
+  }
+ },
+ "gaps": [
+  "HWB/EEB combination rule",
+  "Household electricity default in EEB",
+  "Site climate data (ÖNORM B 8110-5) paywalled; PVGIS proxy used"
+ ]
+}

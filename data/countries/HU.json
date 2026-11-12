@@ -1,0 +1,126 @@
+{
+ "id": "HU",
+ "name": "Hungary",
+ "available": true,
+ "scheme": "Energetikai tanúsítvány",
+ "method": "9/2023 ÉKM decree (monthly)",
+ "legal_basis": "9/2023. (V. 25.) ÉKM rendelet",
+ "climate": [
+  "HU"
+ ],
+ "floor_area": {
+  "code": "A_N",
+  "name": "useful floor area",
+  "basis": "internal",
+  "status": "official"
+ },
+ "label": {
+  "version": "9/2023",
+  "valid_from": "2023-11-01",
+  "indicator": "pe_nren",
+  "indicator_name": "non-renewable primary energy excl. lighting",
+  "unit": "kWh/m2.a",
+  "reference_requirement": 76,
+  "scale": {
+   "classes": [
+    {
+     "class": "A+++",
+     "max": 0
+    },
+    {
+     "class": "A++",
+     "max": 38
+    },
+    {
+     "class": "A+",
+     "max": 68.4
+    },
+    {
+     "class": "A",
+     "max": 76
+    },
+    {
+     "class": "B",
+     "max": 98.8
+    },
+    {
+     "class": "C",
+     "max": 121.6
+    },
+    {
+     "class": "D",
+     "max": 152
+    },
+    {
+     "class": "E",
+     "max": 190
+    },
+    {
+     "class": "F",
+     "max": 235.6
+    },
+    {
+     "class": "G",
+     "max": 296.4
+    },
+    {
+     "class": "H",
+     "max": 380
+    },
+    {
+     "class": "I",
+     "max": null
+    }
+   ],
+   "status": "official",
+   "strictly_below": false
+  },
+  "source": "https://njt.jog.gov.hu/jogszabaly/2008-176-20-22",
+  "secondary_source": "https://zoldpenzugyek.mnb.hu/sw/static/file/20241210_csoknayi_jogszabalyi_valtozasok_kovetkezmenyei_lakoingatlanok_besorolasara.pdf",
+  "note": "Classes A+++2023..I2023 at 0/50/90/100/130/160/200/250/310/390/500 % of the requirement value: 176/2008 Korm. rendelet 3. melléklet (version 2026-01-06), read 2026-11-12. The 76 kWh/m2.a requirement for homes comes from the chamber of engineers (secondary); the decree gives it as a formula in an image.",
+  "reference_requirement_status": "secondary"
+ },
+ "factors": {
+  "source_doc": "9/2023 ÉKM 7. melléklet 2. pont (factors on net calorific value), read 2026-11-12",
+  "electricity": {
+   "pe_tot": 2.6,
+   "pe_nren": 2.3,
+   "co2": 0.455,
+   "status": "official",
+   "source": "https://njt.jog.gov.hu/jogszabaly/2023-9-20-8X"
+  },
+  "gas": {
+   "pe_tot": 1.1,
+   "pe_nren": 1.1,
+   "co2": 0.297,
+   "status": "official",
+   "source": "https://njt.jog.gov.hu/jogszabaly/2023-9-20-8X"
+  },
+  "oil": {
+   "pe_tot": 1.1,
+   "pe_nren": 1.1,
+   "co2": 0.308,
+   "status": "official",
+   "source": "https://njt.jog.gov.hu/jogszabaly/2023-9-20-8X"
+  },
+  "wood": {
+   "pe_tot": 1.2,
+   "pe_nren": 0.6,
+   "co2": 0.04,
+   "status": "official",
+   "source": "https://njt.jog.gov.hu/jogszabaly/2023-9-20-8X",
+   "note": "0.2 non-renewable for qualifying boilers (EU 2015/1189, pellet stoves <=50 kW)"
+  },
+  "district_heat": {
+   "pe_tot": 1.38,
+   "pe_nren": 1.38,
+   "co2": 0.374,
+   "status": "official",
+   "source": "https://njt.jog.gov.hu/jogszabaly/2023-9-20-8X",
+   "note": "Default when the supplier publishes no own factor"
+  }
+ },
+ "gaps": [
+  "Whether the 76 kWh/m2.a requirement is flat for small houses (formula is an image in 9/2023 ÉKM 5. melléklet)"
+ ]
+}

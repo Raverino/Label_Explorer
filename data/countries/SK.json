@@ -1,0 +1,161 @@
+{
+ "id": "SK",
+ "name": "Slovakia",
+ "available": true,
+ "scheme": "Energetický certifikát",
+ "method": "STN 73 0540 / STN EN ISO 52016-1",
+ "legal_basis": "Vyhláška 364/2012 as amended by 35/2020",
+ "climate": [
+  "SK"
+ ],
+ "floor_area": {
+  "code": "A_f",
+  "name": "floor area",
+  "basis": "internal",
+  "status": "unverified"
+ },
+ "label": {
+  "version": "35/2020",
+  "valid_from": "2020-03-10",
+  "indicator": "pe_nren",
+  "indicator_name": "global indicator - primary energy",
+  "unit": "kWh/m2.a",
+  "scale": {
+   "classes": [
+    {
+     "class": "A0",
+     "max": 54
+    },
+    {
+     "class": "A1",
+     "max": 108
+    },
+    {
+     "class": "B",
+     "max": 216
+    },
+    {
+     "class": "C",
+     "max": 324
+    },
+    {
+     "class": "D",
+     "max": 432
+    },
+    {
+     "class": "E",
+     "max": 540
+    },
+    {
+     "class": "F",
+     "max": 648
+    },
+    {
+     "class": "G",
+     "max": null
+    }
+   ],
+   "status": "official",
+   "strictly_below": false
+  },
+  "source": "https://static.slov-lex.sk/pdf/prilohy/SK/ZZ/2020/35/20200310_5228103-2.pdf",
+  "note": "Annex table F (global indicator, rodinné domy), checked in the annex PDF text 2026-11-10. A0+ for an A0 building that exports/stores energy.",
+  "partial_scale_heating": {
+   "indicator": "heat_need",
+   "classes": [
+    {
+     "class": "A",
+     "max": 43
+    },
+    {
+     "class": "B",
+     "max": 86
+    },
+    {
+     "class": "C",
+     "max": 129
+    },
+    {
+     "class": "D",
+     "max": 172
+    },
+    {
+     "class": "E",
+     "max": 215
+    },
+    {
+     "class": "F",
+     "max": 258
+    },
+    {
+     "class": "G",
+     "max": null
+    }
+   ],
+   "status": "official",
+   "strictly_below": false
+  }
+ },
+ "factors": {
+  "source_doc": "Vyhláška 364/2012 Príloha 2 (as of 2020-03-10)",
+  "electricity": {
+   "pe_nren": 2.2,
+   "co2": 0.167,
+   "status": "official",
+   "source": "https://static.slov-lex.sk/pdf/prilohy/SK/ZZ/2012/364/20200310_4720140-2.pdf"
+  },
+  "gas": {
+   "pe_nren": 1.1,
+   "co2": 0.22,
+   "status": "official",
+   "source": "https://static.slov-lex.sk/pdf/prilohy/SK/ZZ/2012/364/20200310_4720140-2.pdf"
+  },
+  "wood_pellets": {
+   "pe_nren": 0.2,
+   "co2": 0.02,
+   "status": "official",
+   "source": "https://static.slov-lex.sk/pdf/prilohy/SK/ZZ/2012/364/20200310_4720140-2.pdf"
+  },
+  "district_heat_gas": {
+   "pe_nren": 1.3,
+   "co2": 0.22,
+   "status": "official",
+   "source": "https://static.slov-lex.sk/pdf/prilohy/SK/ZZ/2012/364/20200310_4720140-2.pdf"
+  },
+  "district_heat_chp": {
+   "pe_nren": 0.7,
+   "co2": 0.22,
+   "status": "official",
+   "source": "https://static.slov-lex.sk/pdf/prilohy/SK/ZZ/2012/364/20200310_4720140-2.pdf"
+  },
+  "pv": {
+   "pe_nren": 0.0,
+   "co2": 0.0,
+   "status": "official",
+   "source": "https://static.slov-lex.sk/pdf/prilohy/SK/ZZ/2012/364/20200310_4720140-2.pdf"
+  },
+  "heat_pump_default_cop": {
+   "air_water_radiator": 2.6,
+   "air_water_lowtemp": 2.9,
+   "ground_water_radiator": 2.9,
+   "ground_water_lowtemp": 3.4,
+   "status": "official",
+   "source": "https://static.slov-lex.sk/pdf/prilohy/SK/ZZ/2012/364/20200310_4720140-2.pdf"
+  }
+ },
+ "conventions": {
+  "min_air_change_h": {
+   "value": 0.5,
+   "status": "official",
+   "source": "https://static.slov-lex.sk/pdf/prilohy/SK/ZZ/2020/35/20200310_5228103-2.pdf"
+  },
+  "nzeb_heat_recovery_min": {
+   "value": 0.6,
+   "status": "official",
+   "source": "https://static.slov-lex.sk/pdf/prilohy/SK/ZZ/2020/35/20200310_5228103-2.pdf"
+  }
+ },
+ "gaps": [
+  "Climate data (STN 73 0540)"
+ ]
+}

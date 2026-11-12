@@ -1,0 +1,119 @@
+{
+ "meta": {
+  "generated": "2026-11-10",
+  "status": "proxy",
+  "source": "Ember (via Our World in Data), carbon intensity of electricity generation, gCO2e/kWh",
+  "url": "https://ourworldindata.org/grapher/carbon-intensity-electricity",
+  "use": "Fallback only where the national method gives no electricity CO2 factor. Generation-based (not consumption, no imports)."
+ },
+ "countries": {
+  "AT": {
+   "year": 2025,
+   "g_per_kWh": 116.91
+  },
+  "BE": {
+   "year": 2025,
+   "g_per_kWh": 149.82
+  },
+  "BG": {
+   "year": 2025,
+   "g_per_kWh": 275.55
+  },
+  "CY": {
+   "year": 2025,
+   "g_per_kWh": 489.0
+  },
+  "CZ": {
+   "year": 2025,
+   "g_per_kWh": 401.46
+  },
+  "DE": {
+   "year": 2025,
+   "g_per_kWh": 329.65
+  },
+  "DK": {
+   "year": 2025,
+   "g_per_kWh": 114.41
+  },
+  "EE": {
+   "year": 2025,
+   "g_per_kWh": 319.15
+  },
+  "EL": {
+   "year": 2025,
+   "g_per_kWh": 315.09
+  },
+  "ES": {
+   "year": 2025,
+   "g_per_kWh": 153.6
+  },
+  "FI": {
+   "year": 2025,
+   "g_per_kWh": 57.47
+  },
+  "FR": {
+   "year": 2025,
+   "g_per_kWh": 41.44
+  },
+  "HR": {
+   "year": 2025,
+   "g_per_kWh": 158.5
+  },
+  "HU": {
+   "year": 2025,
+   "g_per_kWh": 163.02
+  },
+  "IE": {
+   "year": 2025,
+   "g_per_kWh": 256.54
+  },
+  "IT": {
+   "year": 2025,
+   "g_per_kWh": 284.78
+  },
+  "LT": {
+   "year": 2025,
+   "g_per_kWh": 138.36
+  },
+  "LU": {
+   "year": 2025,
+   "g_per_kWh": 123.38
+  },
+  "LV": {
+   "year": 2025,
+   "g_per_kWh": 138.76
+  },
+  "MT": {
+   "year": 2025,
+   "g_per_kWh": 484.02
+  },
+  "NL": {
+   "year": 2025,
+   "g_per_kWh": 253.56
+  },
+  "PL": {
+   "year": 2025,
+   "g_per_kWh": 588.6
+  },
+  "PT": {
+   "year": 2025,
+   "g_per_kWh": 127.91
+  },
+  "RO": {
+   "year": 2025,
+   "g_per_kWh": 250.75
+  },
+  "SE": {
+   "year": 2025,
+   "g_per_kWh": 35.26
+  },
+  "SI": {
+   "year": 2025,
+   "g_per_kWh": 183.29
+  },
+  "SK": {
+   "year": 2025,
+   "g_per_kWh": 94.85
+  }
+ }
+}

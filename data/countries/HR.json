@@ -1,0 +1,94 @@
+{
+ "id": "HR",
+ "name": "Croatia",
+ "available": true,
+ "scheme": "Energetski certifikat",
+ "method": "Algoritam (monthly, HRN EN ISO 13790 based)",
+ "legal_basis": "Pravilnik NN 88/2017 (+NN 90/2020)",
+ "climate": [
+  "HR_cont",
+  "HR_coast"
+ ],
+ "climate_note": "Reference stations, not site climate: Zagreb-Maksimir (continental), Split-Marjan (littoral)",
+ "floor_area": {
+  "code": "A_K",
+  "name": "useful heated floor area",
+  "basis": "internal",
+  "status": "official"
+ },
+ "label": {
+  "version": "NN 88/2017",
+  "valid_from": "2017-09-01",
+  "indicator": "heat_need",
+  "indicator_name": "Q''H,nd,ref heating need at reference climate",
+  "unit": "kWh/m2.a",
+  "scale": {
+   "classes": [
+    {
+     "class": "A+",
+     "max": 15
+    },
+    {
+     "class": "A",
+     "max": 25
+    },
+    {
+     "class": "B",
+     "max": 50
+    },
+    {
+     "class": "C",
+     "max": 100
+    },
+    {
+     "class": "D",
+     "max": 150
+    },
+    {
+     "class": "E",
+     "max": 200
+    },
+    {
+     "class": "F",
+     "max": 250
+    },
+    {
+     "class": "G",
+     "max": null
+    }
+   ],
+   "status": "official",
+   "strictly_below": false
+  },
+  "source": "https://narodne-novine.nn.hr/clanci/sluzbeni/full/2017_09_88_2093.html",
+  "note": "NN 88/2017 Prilog 1 Tablica 1 (all classes A+..G, read 2026-11-12). Tablica 2 adds a second A+..G scale on primary energy (limits in an image, not modelled)."
+ },
+ "factors": {
+  "source_doc": "Metodologija izračuna faktora primarne energije 2017",
+  "electricity": {
+   "pe_tot": 1.614,
+   "status": "official",
+   "source": "https://mpgi.gov.hr/UserDocsImages/dokumenti/EnergetskaUcinkovitost/meteoroloski_podaci/Metodologija_izracuna_faktora_primarne_energije_2017.pdf"
+  },
+  "gas": {
+   "pe_tot": 1.097,
+   "co2": 0.22,
+   "status": "official",
+   "source": "https://mpgi.gov.hr/UserDocsImages/dokumenti/EnergetskaUcinkovitost/meteoroloski_podaci/Metodologija_izracuna_faktora_primarne_energije_2017.pdf",
+   "note": "CO2 61.17 kg/GJ = 0.220 kg/kWh"
+  }
+ },
+ "requirements": {
+  "nzeb_Eprim": {
+   "continental": 45,
+   "littoral": 35,
+   "unit": "kWh/m2.a",
+   "status": "official"
+  }
+ },
+ "gaps": [
+  "Electricity CO2 factor",
+  "Primary-energy scale (Tablica 2) limits",
+  "No replacement of NN 88/2017 found (2026-11-12)"
+ ]
+}

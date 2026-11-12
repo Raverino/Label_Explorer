@@ -1,0 +1,194 @@
+{
+ "NL": {
+  "kind": "element_max",
+  "Rc_floor_min": 3.7,
+  "Rc_wall_min": 4.7,
+  "Rc_roof_min": 6.3,
+  "U_window_max": 1.65,
+  "U_window_note": "area-weighted average of all windows and doors; 2.2 for a single element",
+  "status": "official",
+  "confidence": "high",
+  "note": "Bbl new-build minimums (Rc in m2K/W); confirmed by IPLO and in a 2026 tool run",
+  "source": "https://iplo.nl/regelgeving/regels-voor-activiteiten/bouwen/energiezuinigheid/"
+ },
+ "FI": {
+  "kind": "reference_values",
+  "U_wall": 0.17,
+  "U_floor_ground": 0.16,
+  "U_roof": 0.09,
+  "U_window": 1.0,
+  "U_door": 1.0,
+  "q50": 4.0,
+  "status": "official",
+  "confidence": "high",
+  "note": "Reference values for permits from 2018 (decree 1048/2017 Table 1)",
+  "source": "https://finlex.fi/api/media/statute/53865/mainPdf/main.pdf"
+ },
+ "DE": {
+  "kind": "reference_building",
+  "U_wall": 0.28,
+  "U_roof": 0.2,
+  "U_floor": 0.35,
+  "U_window": 1.3,
+  "g_window": 0.6,
+  "status": "official",
+  "confidence": "high",
+  "note": "GEG Anlage 1 reference building. Not maximums: the real house must not use more primary energy than this reference.",
+  "source": "https://www.gesetze-im-internet.de/geg/anlage_1.html"
+ },
+ "AT": {
+  "kind": "element_max",
+  "U_wall_max": 0.35,
+  "U_roof_max": 0.2,
+  "U_floor_max": 0.4,
+  "U_window_max": 1.4,
+  "status": "secondary",
+  "confidence": "medium",
+  "note": "OIB-RL 6 point 4.5.1 table. Window 1.4 and wall 0.35 seen in 2025 university slides; roof and floor from 2019/2023 energy certificates. The Tirol 2025 guide says these maximums are far from enough for a zero-emission building (about 0.15 opaque and 0.8 windows needed).",
+  "source": "https://www.tirol.gv.at/fileadmin/themen/bauen-wohnen/baupolizei/20260219_Zentrale_%C3%84nderungen_der_OIB_Richtlinie_6_im_Jahr_2025.pdf"
+ },
+ "IE": {
+  "kind": "element_max",
+  "U_wall_max": 0.18,
+  "U_roof_max": 0.16,
+  "U_roof_flat_max": 0.2,
+  "U_floor_max": 0.18,
+  "U_window_max": 1.4,
+  "U_single_element_max": {
+   "opaque": 0.6,
+   "roof": 0.3,
+   "window": 3.0
+  },
+  "status": "official",
+  "confidence": "high",
+  "note": "TGD L Dwellings Table 1, area-weighted average elemental U-values (same table in the 2022 edition and the 2025 consultation draft)",
+  "source": "https://technical-regulation-information-system.ec.europa.eu/es/notification/26494/text/D/EN"
+ },
+ "DK": {
+  "kind": "element_max",
+  "U_wall_max": 0.3,
+  "U_roof_max": 0.2,
+  "U_floor_max": 0.2,
+  "U_door_max": 1.0,
+  "window_rule": {
+   "type": "energy_balance",
+   "formula": "196.4*g_w - 90.36*U_w",
+   "min_kWh_m2": 0.0,
+   "reference_size_m": [
+    1.23,
+    1.48
+   ],
+   "roof_window_formula": "345*g_w - 90.36*U_w",
+   "roof_window_min": 10.0
+  },
+  "psi_max": {
+   "foundation": 0.4,
+   "wall_window": 0.06
+  },
+  "status": "official",
+  "confidence": "high",
+  "note": "BR18 par. 257 (minimum requirements) and par. 258 (windows: energy balance, no U limit)",
+  "source": "https://www.bygningsreglementet.dk/media/e1yd0sbm/krav.pdf"
+ },
+ "ES": {
+  "kind": "element_max",
+  "U_wall_max": 0.41,
+  "U_roof_max": 0.35,
+  "U_ground_max": 0.65,
+  "U_window_max": 1.8,
+  "status": "official",
+  "confidence": "high",
+  "note": "CTE DB-HE Tabla 3.1.1.a-HE1, climate zone D (Madrid): walls and floors to outside air 0.41, roofs 0.35, elements against ground or unheated spaces 0.65, windows (frame + glass + shutter box) 1.8. Read in the DB-HE PDF 2026-11-12.",
+  "source": "https://www.codigotecnico.org/pdf/Documentos/HE/DBHE.pdf"
+ },
+ "SI": {
+  "kind": "envelope_average",
+  "Htr_formula": "0.25 + theta_an/300 + 0.04/f0 + z/8",
+  "Htr_vars": {
+   "theta_an": "mean annual outdoor temp, clamped 7-11 C",
+   "f0": "envelope area / gross volume, clamped 0.2-1.2",
+   "z": "glazed area / envelope area"
+  },
+  "reference_building_U_window": 1.0,
+  "status": "official",
+  "confidence": "medium",
+  "note": "TSG-1-004:2022 par. 8.1.6: no element maximums, only a limit on whole-envelope transmission loss H'tr (W/m2K). Formula read from the PDF layout; fraction placement to be checked.",
+  "source": "https://www.gov.si/assets/ministrstva/MNVP/Dokumenti/Graditev/TSG-1-004_2022_ure.pdf"
+ },
+ "HR": {
+  "kind": "element_max",
+  "U_wall_max": 0.3,
+  "U_roof_max": 0.25,
+  "U_floor_max": 0.4,
+  "U_window_max": 1.6,
+  "U_glass_max": 1.1,
+  "U_door_max": 2.0,
+  "coastal": {
+   "U_wall_max": 0.45,
+   "U_roof_max": 0.3,
+   "U_floor_max": 0.5,
+   "U_window_max": 1.8
+  },
+  "status": "official",
+  "confidence": "high",
+  "note": "NN 128/15 Annex B Table 1, heated >=18 C, coldest month <=3 C (continental); 'coastal' = coldest month >3 C. Later amendments (70/18, 102/20) keep wall 0.30 and roof 0.25 per a municipal source; window not rechecked.",
+  "source": "https://narodne-novine.nn.hr/clanci/sluzbeni/dodatni/438515.pdf"
+ },
+ "SK": {
+  "kind": "element_max",
+  "U_wall_max": 0.15,
+  "U_roof_max": 0.1,
+  "U_window_max": 1.0,
+  "status": "secondary",
+  "confidence": "medium",
+  "note": "STN 73 0540-2 (paid). The standard's author (Sternová, TZB-info 2013) lists target values U_r2 that became the normalized values from 2021: wall 0.15, flat/low-pitch roof 0.10, ceiling to unheated space 0.15. Windows: the same article gives 0.60 for the 2012 edition, a Velux note on the +Z1+Z2 edition gives 1.00 for 2021; 1.00 is used.",
+  "source": "https://normy.normoff.gov.sk/norma/139404/nahlad"
+ },
+ "HU": {
+  "kind": "element_max",
+  "U_wall_max": 0.24,
+  "U_roof_max": 0.17,
+  "U_floor_max": 0.3,
+  "U_window_max": 1.1,
+  "U_window_metal_max": 1.4,
+  "U_glass_max": 1.0,
+  "U_door_max": 1.4,
+  "U_roof_window_max": 1.3,
+  "status": "official",
+  "confidence": "high",
+  "note": "9/2023 (V. 25.) EKM Annex 1 point 1.1 (window 1.1 = wood/PVC frame >0.5 m2; floor 0.30 = slab on ground, new buildings)",
+  "source": "https://njt.jog.gov.hu/jogszabaly/2023-9-20-8X"
+ },
+ "BE-WAL": {
+  "kind": "element_max",
+  "U_wall_max": 0.24,
+  "U_roof_max": 0.24,
+  "U_floor_max": 0.24,
+  "U_window_max": 1.5,
+  "U_glass_max": 1.1,
+  "U_door_max": 2.0,
+  "status": "secondary",
+  "confidence": "medium",
+  "note": "PEB Umax since 2021 (AGW annex C1); seen in the Wallonia PEB leaflet, Test-Achats and 2021 PEB reports",
+  "source": "https://energie.wallonie.be/servlet/Repository/depliant-peb.pdf?ID=45799"
+ },
+ "BE-BRU": {
+  "kind": "element_max",
+  "U_wall_max": 0.24,
+  "U_roof_max": 0.24,
+  "U_floor_max": 0.24,
+  "U_window_max": 1.5,
+  "U_glass_max": 1.1,
+  "U_door_max": 2.0,
+  "status": "secondary",
+  "confidence": "medium",
+  "note": "Same Umax as Wallonia per Test-Achats (all three regions); Brussels annex not read",
+  "source": "https://www.test-achats.be/maison-energie/isolation/dossier/peb"
+ },
+ "EE": {
+  "kind": "none",
+  "status": "official",
+  "confidence": "high",
+  "note": "No element limits; only the ETA energy requirement"
+ }
+}

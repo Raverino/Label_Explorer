@@ -1,0 +1,138 @@
+{
+ "meta": {
+  "generated": "2026-11-10",
+  "status": "typical",
+  "basis": "EN 673 / EN 410 glazing, EN ISO 10077-1 frames (typical values); whole windows computed per size in the app. windows = legacy whole-window values"
+ },
+ "windows": {
+  "single": {
+   "name": "Single glazing",
+   "U_w": 5.2,
+   "g": 0.85,
+   "frame_fraction": 0.25,
+   "coins_per_m2": 2
+  },
+  "double_old": {
+   "name": "Double glazing (old)",
+   "U_w": 2.9,
+   "g": 0.75,
+   "frame_fraction": 0.25,
+   "coins_per_m2": 3
+  },
+  "double_hr": {
+   "name": "Double HR++ (low-e, argon)",
+   "U_w": 1.4,
+   "g": 0.6,
+   "frame_fraction": 0.25,
+   "coins_per_m2": 4
+  },
+  "triple": {
+   "name": "Triple glazing",
+   "U_w": 0.9,
+   "g": 0.5,
+   "frame_fraction": 0.25,
+   "coins_per_m2": 6
+  },
+  "triple_passive": {
+   "name": "Triple, passive-house frame",
+   "U_w": 0.7,
+   "g": 0.5,
+   "frame_fraction": 0.22,
+   "coins_per_m2": 8
+  }
+ },
+ "glazing": {
+  "single": {
+   "name": "Single glass",
+   "U_g": 5.8,
+   "g": 0.85,
+   "psi_g": 0.0,
+   "coins_per_m2": 1
+  },
+  "double_old": {
+   "name": "Double glass (air, old)",
+   "U_g": 2.8,
+   "g": 0.76,
+   "psi_g": 0.06,
+   "coins_per_m2": 2
+  },
+  "double_hr": {
+   "name": "Double HR++ (low-e, argon)",
+   "U_g": 1.1,
+   "g": 0.6,
+   "psi_g": 0.06,
+   "coins_per_m2": 3
+  },
+  "triple": {
+   "name": "Triple glass",
+   "U_g": 0.6,
+   "g": 0.5,
+   "psi_g": 0.05,
+   "coins_per_m2": 4
+  },
+  "triple_passive": {
+   "name": "Triple, warm-edge spacer",
+   "U_g": 0.5,
+   "g": 0.5,
+   "psi_g": 0.035,
+   "coins_per_m2": 5
+  }
+ },
+ "frames": {
+  "aluminium_old": {
+   "name": "Aluminium, no thermal break",
+   "U_f": 5.9,
+   "width_m": 0.08,
+   "coins_per_m2": 1
+  },
+  "aluminium_tb": {
+   "name": "Aluminium, thermal break",
+   "U_f": 2.2,
+   "width_m": 0.09,
+   "coins_per_m2": 3
+  },
+  "wood": {
+   "name": "Wood (68 mm hardwood)",
+   "U_f": 1.8,
+   "width_m": 0.11,
+   "coins_per_m2": 3
+  },
+  "pvc": {
+   "name": "PVC, multi-chamber",
+   "U_f": 1.3,
+   "width_m": 0.12,
+   "coins_per_m2": 2
+  },
+  "passive": {
+   "name": "Passive-house frame",
+   "U_f": 0.8,
+   "width_m": 0.13,
+   "coins_per_m2": 5
+  }
+ },
+ "doors": {
+  "door_standard": {
+   "name": "Insulated door",
+   "U": 1.6,
+   "coins": 3
+  },
+  "door_passive": {
+   "name": "Passive-house door",
+   "U": 0.8,
+   "coins": 5
+  }
+ },
+ "shading": {
+  "none": {
+   "F_sh": 1.0
+  },
+  "overhang": {
+   "F_sh": 0.85,
+   "summer_only": true
+  },
+  "external_blinds": {
+   "F_sh": 0.3,
+   "summer_only": true
+  }
+ }
+}

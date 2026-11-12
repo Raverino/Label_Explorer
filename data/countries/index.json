@@ -1,0 +1,222 @@
+{
+ "generated": "2026-11-11",
+ "countries": [
+  {
+   "id": "NL",
+   "map_id": "NL",
+   "name": "Netherlands",
+   "available": true,
+   "scheme": "Energielabel (NTA 8800) + BENG",
+   "indicator": "pe_fossil"
+  },
+  {
+   "id": "DE",
+   "map_id": "DE",
+   "name": "Germany",
+   "available": true,
+   "scheme": "Energieausweis (Bedarfsausweis)",
+   "indicator": "final"
+  },
+  {
+   "id": "AT",
+   "map_id": "AT",
+   "name": "Austria",
+   "available": true,
+   "scheme": "Energieausweis (OIB-RL 6, 2025)",
+   "indicator": "dual"
+  },
+  {
+   "id": "IE",
+   "map_id": "IE",
+   "name": "Ireland",
+   "available": true,
+   "scheme": "Building Energy Rating (BER)",
+   "indicator": "pe_tot"
+  },
+  {
+   "id": "DK",
+   "map_id": "DK",
+   "name": "Denmark",
+   "available": true,
+   "scheme": "Energimærke",
+   "indicator": "weighted"
+  },
+  {
+   "id": "FI",
+   "map_id": "FI",
+   "name": "Finland",
+   "available": true,
+   "scheme": "Energiatodistus (E-luku)",
+   "indicator": "weighted"
+  },
+  {
+   "id": "EE",
+   "map_id": "EE",
+   "name": "Estonia",
+   "available": true,
+   "scheme": "Energiamärgis (ETA)",
+   "indicator": "weighted"
+  },
+  {
+   "id": "SI",
+   "map_id": "SI",
+   "name": "Slovenia",
+   "available": true,
+   "scheme": "Energetska izkaznica",
+   "indicator": "heat_need"
+  },
+  {
+   "id": "HR",
+   "map_id": "HR",
+   "name": "Croatia",
+   "available": true,
+   "scheme": "Energetski certifikat",
+   "indicator": "heat_need"
+  },
+  {
+   "id": "ES",
+   "map_id": "ES",
+   "name": "Spain",
+   "available": true,
+   "scheme": "Certificado de eficiencia energética",
+   "indicator": "pe_nren"
+  },
+  {
+   "id": "BE-WAL",
+   "map_id": "BE",
+   "name": "Belgium - Wallonia",
+   "available": true,
+   "scheme": "Certificat PEB",
+   "indicator": "pe_tot"
+  },
+  {
+   "id": "BE-BRU",
+   "map_id": "BE",
+   "name": "Belgium - Brussels",
+   "available": true,
+   "scheme": "Certificat PEB",
+   "indicator": "pe_tot"
+  },
+  {
+   "id": "SK",
+   "map_id": "SK",
+   "name": "Slovakia",
+   "available": true,
+   "scheme": "Energetický certifikát",
+   "indicator": "pe_nren"
+  },
+  {
+   "id": "HU",
+   "map_id": "HU",
+   "name": "Hungary",
+   "available": true,
+   "scheme": "Energetikai tanúsítvány",
+   "indicator": "pe_nren"
+  },
+  {
+   "id": "FR",
+   "map_id": "FR",
+   "name": "France",
+   "available": false,
+   "reason": "Needs the DPE CO2 factors; will be shown as an indicative DPE."
+  },
+  {
+   "id": "BE-VLG",
+   "map_id": "BE",
+   "name": "Belgium - Flanders",
+   "available": false,
+   "reason": "Only class A is official; the full scale and the A-G switch date are pending."
+  },
+  {
+   "id": "LU",
+   "map_id": "LU",
+   "name": "Luxembourg",
+   "available": false,
+   "reason": "Official class table (RGD 2021 Annex I) not yet confirmed."
+  },
+  {
+   "id": "SE",
+   "map_id": "SE",
+   "name": "Sweden",
+   "available": false,
+   "reason": "New Etal method and scale since 1 Oct 2026; values not yet published."
+  },
+  {
+   "id": "LV",
+   "map_id": "LV",
+   "name": "Latvia",
+   "available": false,
+   "reason": "Class limits published only as an image; being transcribed."
+  },
+  {
+   "id": "CZ",
+   "map_id": "CZ",
+   "name": "Czechia",
+   "available": false,
+   "reason": "Classes are relative to a reference building; reference values pending."
+  },
+  {
+   "id": "IT",
+   "map_id": "IT",
+   "name": "Italy",
+   "available": false,
+   "reason": "Classes are relative to a reference building; reference values pending."
+  },
+  {
+   "id": "GR",
+   "map_id": "GR",
+   "name": "Greece",
+   "available": false,
+   "reason": "Classes are relative to a reference building; reference values pending."
+  },
+  {
+   "id": "PT",
+   "map_id": "PT",
+   "name": "Portugal",
+   "available": false,
+   "reason": "Reference-building scale; official annexes not yet read."
+  },
+  {
+   "id": "RO",
+   "map_id": "RO",
+   "name": "Romania",
+   "available": false,
+   "reason": "Official single-family class table not yet confirmed."
+  },
+  {
+   "id": "BG",
+   "map_id": "BG",
+   "name": "Bulgaria",
+   "available": false,
+   "reason": "Reference values for houses not yet extracted."
+  },
+  {
+   "id": "PL",
+   "map_id": "PL",
+   "name": "Poland",
+   "available": false,
+   "reason": "No energy classes in force yet."
+  },
+  {
+   "id": "LT",
+   "map_id": "LT",
+   "name": "Lithuania",
+   "available": false,
+   "reason": "Class depends on several tests, not one energy value."
+  },
+  {
+   "id": "MT",
+   "map_id": "MT",
+   "name": "Malta",
+   "available": false,
+   "reason": "No classes defined for dwellings."
+  },
+  {
+   "id": "CY",
+   "map_id": "CY",
+   "name": "Cyprus",
+   "available": false,
+   "reason": "Class limits not published."
+  }
+ ]
+}

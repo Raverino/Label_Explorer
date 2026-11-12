@@ -1,0 +1,214 @@
+{
+ "meta": {
+  "generated": "2026-11-10",
+  "unit": "EUR/kWh incl. all taxes",
+  "status": "official",
+  "electricity": "Eurostat nrg_pc_204, households 2500-4999 kWh/yr (band DC)",
+  "gas": "Eurostat nrg_pc_202, households 20-199 GJ/yr (band D2)",
+  "url": "https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table"
+ },
+ "electricity": {
+  "BE": {
+   "value": 0.3575,
+   "period": "2026-S1"
+  },
+  "BG": {
+   "value": 0.1341,
+   "period": "2026-S1"
+  },
+  "CZ": {
+   "value": 0.2884,
+   "period": "2026-S1"
+  },
+  "DK": {
+   "value": 0.2375,
+   "period": "2026-S1"
+  },
+  "DE": {
+   "value": 0.3618,
+   "period": "2026-S1"
+  },
+  "EE": {
+   "value": 0.2118,
+   "period": "2026-S1"
+  },
+  "IE": {
+   "value": 0.3871,
+   "period": "2026-S1"
+  },
+  "EL": {
+   "value": 0.2401,
+   "period": "2026-S1"
+  },
+  "ES": {
+   "value": 0.2509,
+   "period": "2026-S1"
+  },
+  "FR": {
+   "value": 0.2485,
+   "period": "2026-S1"
+  },
+  "HR": {
+   "value": 0.1816,
+   "period": "2026-S1"
+  },
+  "IT": {
+   "value": 0.3142,
+   "period": "2026-S1"
+  },
+  "CY": {
+   "value": 0.2688,
+   "period": "2026-S1"
+  },
+  "LV": {
+   "value": 0.2415,
+   "period": "2026-S1"
+  },
+  "LT": {
+   "value": 0.2162,
+   "period": "2026-S1"
+  },
+  "LU": {
+   "value": 0.2023,
+   "period": "2026-S1"
+  },
+  "HU": {
+   "value": 0.1139,
+   "period": "2026-S1"
+  },
+  "MT": {
+   "value": 0.1268,
+   "period": "2026-S1"
+  },
+  "NL": {
+   "value": 0.244,
+   "period": "2026-S1"
+  },
+  "AT": {
+   "value": 0.326,
+   "period": "2026-S1"
+  },
+  "PL": {
+   "value": 0.2999,
+   "period": "2026-S1"
+  },
+  "PT": {
+   "value": 0.2367,
+   "period": "2026-S1"
+  },
+  "RO": {
+   "value": 0.2836,
+   "period": "2026-S1"
+  },
+  "SI": {
+   "value": 0.2118,
+   "period": "2026-S1"
+  },
+  "SK": {
+   "value": 0.1985,
+   "period": "2026-S1"
+  },
+  "FI": {
+   "value": 0.2694,
+   "period": "2026-S1"
+  },
+  "SE": {
+   "value": 0.3062,
+   "period": "2026-S1"
+  }
+ },
+ "gas": {
+  "BE": {
+   "value": 0.0846,
+   "period": "2026-S1"
+  },
+  "BG": {
+   "value": 0.0654,
+   "period": "2026-S1"
+  },
+  "CZ": {
+   "value": 0.0901,
+   "period": "2026-S1"
+  },
+  "DK": {
+   "value": 0.1211,
+   "period": "2026-S1"
+  },
+  "DE": {
+   "value": 0.1156,
+   "period": "2026-S1"
+  },
+  "EE": {
+   "value": 0.0796,
+   "period": "2026-S1"
+  },
+  "IE": {
+   "value": 0.1183,
+   "period": "2026-S1"
+  },
+  "EL": {
+   "value": 0.0771,
+   "period": "2026-S1"
+  },
+  "ES": {
+   "value": 0.0787,
+   "period": "2026-S1"
+  },
+  "FR": {
+   "value": 0.1347,
+   "period": "2026-S1"
+  },
+  "HR": {
+   "value": 0.0502,
+   "period": "2026-S1"
+  },
+  "IT": {
+   "value": 0.1137,
+   "period": "2026-S1"
+  },
+  "LV": {
+   "value": 0.0812,
+   "period": "2026-S1"
+  },
+  "LT": {
+   "value": 0.0629,
+   "period": "2026-S1"
+  },
+  "LU": {
+   "value": 0.0859,
+   "period": "2026-S1"
+  },
+  "HU": {
+   "value": 0.033,
+   "period": "2026-S1"
+  },
+  "NL": {
+   "value": 0.1622,
+   "period": "2026-S1"
+  },
+  "AT": {
+   "value": 0.124,
+   "period": "2026-S1"
+  },
+  "PT": {
+   "value": 0.1256,
+   "period": "2026-S1"
+  },
+  "RO": {
+   "value": 0.0594,
+   "period": "2026-S1"
+  },
+  "SI": {
+   "value": 0.0859,
+   "period": "2026-S1"
+  },
+  "SK": {
+   "value": 0.0626,
+   "period": "2026-S1"
+  },
+  "SE": {
+   "value": 0.2201,
+   "period": "2026-S1"
+  }
+ }
+}

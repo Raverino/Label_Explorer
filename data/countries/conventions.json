@@ -1,0 +1,74 @@
+{
+ "_default": {
+  "setpoint_C": 20,
+  "internal_gains_W_m2": 3.0,
+  "dhw_kWh_m2a": 15,
+  "air_change_h": 0.5,
+  "status": "assumption",
+  "note": "Used where a country value is missing; documented as an app assumption"
+ },
+ "NL": {
+  "setpoint_C": 20,
+  "status": "unverified",
+  "note": "NTA 8800 values pending (OPEN_DATA_GAPS A2)"
+ },
+ "DE": {
+  "setpoint_C": 20,
+  "internal_gains_W_m2": 1.875,
+  "dhw_kWh_m2a": 12.5,
+  "status": "official (hot water) / secondary (gains)",
+  "source": "https://www.gesetze-im-internet.de/geg/__20.html",
+  "note": "Hot water 12.5 kWh/(m2.a) per A_N: GModG § 20 Abs. 2. Internal gains 45 Wh/(m2.d) = 1.875 W/m2: DIN V 18599-10 single-family (paid standard; secondary)"
+ },
+ "AT": {
+  "setpoint_C": 20,
+  "heating_limit_C": 12,
+  "internal_gains_W_m2": 3.75,
+  "status": "official (setpoints) / unverified (gains)",
+  "source": "https://www.tirol.gv.at/fileadmin/themen/bauen-wohnen/baupolizei/20260219_Zentrale_%C3%84nderungen_der_OIB_Richtlinie_6_im_Jahr_2025.pdf"
+ },
+ "IE": {
+  "setpoint_C": "21 living / 18 rest",
+  "status": "official (setpoints, occupancy) / default (gains, hot water)",
+  "source": "https://www.seai.ie/sites/default/files/publications/DEAP_Manual.pdf#page=55",
+  "note": "DEAP 4.2.7: 21 C living area / 18 C rest, 56 h/week; occupancy N(TFA) formula official. Gains and hot water depend on N inside the DEAP software; the app keeps its EN default"
+ },
+ "DK": {
+  "setpoint_C": 20,
+  "internal_gains_W_m2": 5.0,
+  "dhw_L_m2a": 250,
+  "status": "secondary",
+  "source": "https://www.innobyg.dk/media/75610/branchevejledning-for-energiberegninger-20_2018_final.pdf",
+  "note": "SBi 213 dwelling defaults: persons 1.5 W/m2 + equipment incl. lighting 3.5 W/m2 (min 90 / 210 W per home), hot water 250 L/(m2.a). SBi 213 itself is paid; values from the industry guide"
+ },
+ "FI": {
+  "setpoint_C": 21,
+  "internal_gains_W_m2": {
+   "persons": 2,
+   "appliances": 3,
+   "lighting": 6,
+   "usage_factors": [
+    0.6,
+    0.6,
+    0.1
+   ]
+  },
+  "dhw_kWh_m2a": 35,
+  "dhw_max_kWh_per_dwelling": 4200,
+  "vent_dm3_s_m2": 0.4,
+  "status": "official",
+  "source": "https://www.finlex.fi/fi/lainsaadanto/saadoskokoelma/2017/1010",
+  "note": "Decree 1010/2017 class 1 (small residential): §10 outdoor air 0.4 dm3/(s.m2), heating limit 21 C; §11 lighting 6 / appliances 3 / people 2 W/m2 with usage 0.1 / 0.6 / 0.6; §12 hot water 35 kWh/(m2.a), at most 4200 kWh per dwelling"
+ },
+ "SK": {
+  "air_change_h": 0.5,
+  "status": "official",
+  "source": "https://static.slov-lex.sk/pdf/prilohy/SK/ZZ/2020/35/20200310_5228103-2.pdf"
+ },
+ "BE-BRU": {
+  "setpoint_C": 18,
+  "status": "official (setpoint) / default (gains, hot water)",
+  "source": "https://document.environnement.brussels/opac_css/elecfile/IF_NRJ_ResultatCertificatPEB_FR",
+  "note": "Brussels certificate: 18 C mean in all rooms, 365 days; hot water scales with home size (about 150 L/day for 170 m2)"
+ }
+}

@@ -1,0 +1,107 @@
+{
+ "id": "BE-BRU",
+ "name": "Belgium - Brussels",
+ "map_id": "BE",
+ "available": true,
+ "scheme": "Certificat PEB",
+ "method": "Bruxelles Environnement certification method",
+ "legal_basis": "COBRACE / PEB",
+ "climate": [
+  "BE"
+ ],
+ "floor_area": {
+  "code": "A_brut",
+  "name": "gross floor area of the PEB unit",
+  "basis": "gross_external",
+  "status": "official",
+  "source": "https://document.environnement.brussels/opac_css/elecfile/Annexe1_Methode_calcul_certificationPEB_habitations_individuelles"
+ },
+ "label": {
+  "version": "Brussels PEB",
+  "valid_from": "2011",
+  "indicator": "pe_tot",
+  "indicator_name": "total primary energy",
+  "unit": "kWhEP/m2.yr",
+  "scale": {
+   "classes": [
+    {
+     "class": "A+",
+     "max": 15
+    },
+    {
+     "class": "A",
+     "max": 30
+    },
+    {
+     "class": "A-",
+     "max": 45
+    },
+    {
+     "class": "B",
+     "max": 95
+    },
+    {
+     "class": "C",
+     "max": 150
+    },
+    {
+     "class": "D",
+     "max": 210
+    },
+    {
+     "class": "E",
+     "max": 275
+    },
+    {
+     "class": "F",
+     "max": 345
+    },
+    {
+     "class": "G",
+     "max": null
+    }
+   ],
+   "status": "official",
+   "strictly_below": false
+  },
+  "source": "https://environnement.brussels/citoyen/reglementation-et-inspection/obligations-et-autorisations/objectifs-peb-pour-chaque-logement-et-exigences-peb-en-cas-de-travaux",
+  "secondary_source": "https://document.environnement.brussels/opac_css/elecfile/IF_NRJ_ResultatCertificatPEB_FR",
+  "note": "Main bands official (Bruxelles Environnement: A <=45, B 46-95, C 96-150, D 151-210, E 211-275, F 276-345, G >345). Each class has +/0/- thirds: Bruxelles Environnement gives C- = 133-150; the A+/A/A- limits 15/30 follow the same thirds rule (derived). From 2033 every home must reach 275 (class E)."
+ },
+ "factors": {
+  "electricity": {
+   "pe_tot": 2.5,
+   "status": "official",
+   "source": "https://document.environnement.brussels/opac_css/elecfile/IF_NRJ_ResultatCertificatPEB_FR",
+   "note": "Stated on Bruxelles Environnement's certificate explanation"
+  },
+  "gas": {
+   "pe_tot": 1.0,
+   "status": "secondary",
+   "note": "Belgian EPB methods share fossil fp = 1.0 (Wallonia and Flanders official)"
+  }
+ },
+ "requirements": {
+  "CEP": {
+   "max": 45
+  },
+  "heating_need": {
+   "max": 15
+  },
+  "status": "official",
+  "source": "https://environnement.brussels/citoyen/reglementation/obligations-et-autorisations/exigences-et-procedure-de-la-reglementation-travaux-peb"
+ },
+ "conventions": {
+  "heating_setpoint_C": {
+   "value": 18,
+   "status": "official",
+   "source": "https://document.environnement.brussels/opac_css/elecfile/IF_NRJ_ResultatCertificatPEB_FR",
+   "note": "Mean 18 C in all rooms through the heating season, 365 days a year (Bruxelles Environnement, certificate explanation, Jan 2025)"
+  }
+ },
+ "gaps": [
+  "Gas/DH factors",
+  "CO2 factors",
+  "A sub-level limits derived from the thirds rule"
+ ]
+}

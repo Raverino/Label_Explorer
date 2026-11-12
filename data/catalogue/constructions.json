@@ -1,0 +1,296 @@
+{
+ "meta": {
+  "generated": "2026-11-10",
+  "status": "typical",
+  "basis": "typical design value (EN ISO 10456 / manufacturer ranges)"
+ },
+ "insulation_steps_m": [
+  0.0,
+  0.05,
+  0.1,
+  0.15,
+  0.2,
+  0.25,
+  0.3,
+  0.35,
+  0.4
+ ],
+ "constructions": {
+  "wall_cavity_brick": {
+   "name": "Cavity brick wall",
+   "element": "wall",
+   "style": "Dutch/Belgian classic",
+   "layers": [
+    [
+     "brick_clay",
+     0.1
+    ],
+    [
+     "INSULATION",
+     null
+    ],
+    [
+     "sand_lime",
+     0.1
+    ],
+    [
+     "plaster",
+     0.01
+    ]
+   ],
+   "insulation_options": [
+    "mineral_wool",
+    "pir",
+    "eps"
+   ],
+   "coins_base": 9
+  },
+  "wall_etics_block": {
+   "name": "Block wall + external insulation (ETICS)",
+   "element": "wall",
+   "style": "Central Europe",
+   "layers": [
+    [
+     "plaster",
+     0.01
+    ],
+    [
+     "INSULATION",
+     null
+    ],
+    [
+     "sand_lime",
+     0.175
+    ],
+    [
+     "plaster",
+     0.01
+    ]
+   ],
+   "insulation_options": [
+    "eps",
+    "mineral_wool",
+    "wood_fibre"
+   ],
+   "coins_base": 7
+  },
+  "wall_monolithic": {
+   "name": "Monolithic insulating block",
+   "element": "wall",
+   "style": "Southern Germany/Austria",
+   "layers": [
+    [
+     "plaster",
+     0.02
+    ],
+    [
+     "porotherm",
+     0.425
+    ],
+    [
+     "plaster",
+     0.015
+    ]
+   ],
+   "insulation_options": [],
+   "coins_base": 8
+  },
+  "wall_aerated": {
+   "name": "Aerated concrete wall",
+   "element": "wall",
+   "style": "Nordic/Baltic/Central",
+   "layers": [
+    [
+     "plaster",
+     0.01
+    ],
+    [
+     "aerated_concrete",
+     0.365
+    ],
+    [
+     "plaster",
+     0.01
+    ]
+   ],
+   "insulation_options": [],
+   "coins_base": 7
+  },
+  "wall_timber_frame": {
+   "name": "Timber frame wall",
+   "element": "wall",
+   "style": "Nordic/Ireland",
+   "layers": [
+    [
+     "timber_cladding",
+     0.022
+    ],
+    [
+     "wood_fibre",
+     0.06
+    ],
+    [
+     "INSULATION_FRAMED",
+     null
+    ],
+    [
+     "gypsum_board",
+     0.0125
+    ]
+   ],
+   "insulation_options": [
+    "mineral_wool",
+    "cellulose",
+    "hemp"
+   ],
+   "frame_fraction": 0.12,
+   "coins_base": 6
+  },
+  "wall_clt": {
+   "name": "CLT wall",
+   "element": "wall",
+   "style": "Alpine / modern",
+   "layers": [
+    [
+     "timber_cladding",
+     0.022
+    ],
+    [
+     "INSULATION",
+     null
+    ],
+    [
+     "clt",
+     0.1
+    ]
+   ],
+   "insulation_options": [
+    "wood_fibre",
+    "mineral_wool"
+   ],
+   "coins_base": 10
+  },
+  "wall_straw": {
+   "name": "Straw bale wall",
+   "element": "wall",
+   "style": "Biobased",
+   "layers": [
+    [
+     "plaster",
+     0.03
+    ],
+    [
+     "straw",
+     0.45
+    ],
+    [
+     "plaster",
+     0.03
+    ]
+   ],
+   "insulation_options": [],
+   "coins_base": 6
+  },
+  "roof_pitched_rafters": {
+   "name": "Pitched roof, insulation between rafters",
+   "element": "roof",
+   "layers": [
+    [
+     "roof_tiles",
+     0
+    ],
+    [
+     "wood_fibre",
+     0.04
+    ],
+    [
+     "INSULATION_FRAMED",
+     null
+    ],
+    [
+     "gypsum_board",
+     0.0125
+    ]
+   ],
+   "insulation_options": [
+    "mineral_wool",
+    "cellulose",
+    "wood_fibre"
+   ],
+   "frame_fraction": 0.1,
+   "coins_base": 7
+  },
+  "roof_flat_concrete": {
+   "name": "Flat roof, warm deck on concrete",
+   "element": "roof",
+   "layers": [
+    [
+     "INSULATION",
+     null
+    ],
+    [
+     "concrete",
+     0.2
+    ],
+    [
+     "plaster",
+     0.01
+    ]
+   ],
+   "insulation_options": [
+    "pir",
+    "eps",
+    "mineral_wool"
+   ],
+   "coins_base": 8
+  },
+  "floor_slab_ground": {
+   "name": "Ground-bearing slab",
+   "element": "floor",
+   "layers": [
+    [
+     "screed",
+     0.06
+    ],
+    [
+     "INSULATION",
+     null
+    ],
+    [
+     "concrete",
+     0.2
+    ]
+   ],
+   "insulation_options": [
+    "xps",
+    "eps",
+    "pir"
+   ],
+   "coins_base": 6
+  },
+  "floor_crawlspace": {
+   "name": "Floor over crawl space",
+   "element": "floor",
+   "layers": [
+    [
+     "screed",
+     0.06
+    ],
+    [
+     "concrete",
+     0.2
+    ],
+    [
+     "INSULATION",
+     null
+    ]
+   ],
+   "insulation_options": [
+    "eps",
+    "pir",
+    "mineral_wool"
+   ],
+   "coins_base": 6
+  }
+ }
+}

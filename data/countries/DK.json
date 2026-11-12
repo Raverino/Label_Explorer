@@ -1,0 +1,106 @@
+{
+ "id": "DK",
+ "name": "Denmark",
+ "available": true,
+ "scheme": "Energimærke",
+ "method": "SBi 213 / Be18 (monthly)",
+ "legal_basis": "BR18 §259; ENS energy labelling rules",
+ "climate": [
+  "DK"
+ ],
+ "floor_area": {
+  "code": "A",
+  "name": "heated gross floor area",
+  "basis": "gross_external",
+  "status": "official"
+ },
+ "label": {
+  "version": "BR18 label",
+  "valid_from": "2018",
+  "indicator": "weighted",
+  "indicator_name": "weighted delivered energy (primary-energy weighted)",
+  "unit": "kWh/m2.yr",
+  "scale_type": "area_formula",
+  "formulas": [
+   {
+    "class": "A2020",
+    "c": 27,
+    "k": 0
+   },
+   {
+    "class": "A2015",
+    "c": 30,
+    "k": 1000
+   },
+   {
+    "class": "A2010",
+    "c": 52.5,
+    "k": 1650
+   },
+   {
+    "class": "B",
+    "c": 70,
+    "k": 2200
+   },
+   {
+    "class": "C",
+    "c": 110,
+    "k": 3200
+   },
+   {
+    "class": "D",
+    "c": 150,
+    "k": 4200
+   },
+   {
+    "class": "E",
+    "c": 190,
+    "k": 5200
+   },
+   {
+    "class": "F",
+    "c": 240,
+    "k": 6500
+   },
+   {
+    "class": "G",
+    "c": null,
+    "k": null
+   }
+  ],
+  "formula_note": "max = c + k / A (strictly below)",
+  "status": "official",
+  "source": "https://ens.dk/media/7592/download"
+ },
+ "factors": {
+  "electricity": {
+   "weight": 1.9,
+   "status": "official",
+   "source": "https://www.bygningsreglementet.dk/media/mxzlfopn/energiforbrug.pdf",
+   "note": "BR18 §252"
+  },
+  "district_heat": {
+   "weight": 0.85,
+   "status": "official",
+   "source": "https://www.bygningsreglementet.dk/media/mxzlfopn/energiforbrug.pdf"
+  },
+  "gas": {
+   "weight": 1.0,
+   "status": "official",
+   "source": "https://www.bygningsreglementet.dk/media/mxzlfopn/energiforbrug.pdf",
+   "note": "BR18 §252: 1.0 for other forms of heat"
+  }
+ },
+ "requirements": {
+  "energy_frame": {
+   "formula": "30 + 1000/A",
+   "unit": "kWh/m2.yr",
+   "status": "official",
+   "source": "https://www.bygningsreglementet.dk/tekniske-bestemmelser/11/krav/259/"
+  }
+ },
+ "gaps": [
+  "CO2 factors (not part of the label; grid fallback used)",
+  "Whether 2025-26 BR18 revisions changed the label"
+ ]
+}

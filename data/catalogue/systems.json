@@ -1,0 +1,138 @@
+{
+ "meta": {
+  "generated": "2026-11-10",
+  "status": "typical",
+  "basis": "EN 14825 / Ecodesign typical seasonal values"
+ },
+ "ventilation": {
+  "natural": {
+   "name": "Natural (windows/vents)",
+   "eta_hr": 0.0,
+   "fan_W_per_m3h": 0.0
+  },
+  "exhaust": {
+   "name": "Mechanical exhaust",
+   "eta_hr": 0.0,
+   "fan_W_per_m3h": 0.1
+  },
+  "balanced_hr": {
+   "name": "Balanced with heat recovery",
+   "eta_hr": 0.8,
+   "fan_W_per_m3h": 0.25
+  }
+ },
+ "heating": {
+  "gas_condensing": {
+   "name": "Gas condensing boiler",
+   "carrier": "gas",
+   "eff_heating": 0.92,
+   "eff_dhw": 0.8,
+   "fossil": true,
+   "coins": 4,
+   "note": "Seasonal on gross calorific value; ~0.98 on net"
+  },
+  "oil_boiler": {
+   "name": "Oil boiler",
+   "carrier": "oil",
+   "eff_heating": 0.88,
+   "eff_dhw": 0.75,
+   "fossil": true,
+   "coins": 4
+  },
+  "biomass_pellet": {
+   "name": "Pellet boiler",
+   "carrier": "wood",
+   "eff_heating": 0.85,
+   "eff_dhw": 0.75,
+   "fossil": false,
+   "coins": 7
+  },
+  "hp_air_water": {
+   "name": "Air-to-water heat pump",
+   "carrier": "electricity",
+   "fossil": false,
+   "coins": 8,
+   "scop": {
+    "35": 3.4,
+    "45": 3.0,
+    "55": 2.6
+   },
+   "scop_dhw": 2.4,
+   "climate_correction": true,
+   "note": "In-use seasonal values (below EN 14825 lab SCOP ~4.0), calibrated so the RVO reference house L lands near its NTA 8800 BENG 2"
+  },
+  "hp_ground_water": {
+   "name": "Ground-source heat pump",
+   "carrier": "electricity",
+   "fossil": false,
+   "coins": 12,
+   "scop": {
+    "35": 4.2,
+    "45": 3.7,
+    "55": 3.2
+   },
+   "scop_dhw": 2.8,
+   "note": "In-use seasonal values"
+  },
+  "hp_hybrid": {
+   "name": "Hybrid heat pump + gas boiler",
+   "carrier": "electricity+gas",
+   "fossil": true,
+   "coins": 7,
+   "share_hp": 0.7,
+   "scop": {
+    "35": 3.3,
+    "45": 2.9,
+    "55": 2.5
+   },
+   "backup": "gas_condensing"
+  },
+  "direct_electric": {
+   "name": "Direct electric heaters",
+   "carrier": "electricity",
+   "eff_heating": 1.0,
+   "eff_dhw": 0.95,
+   "fossil": false,
+   "coins": 2
+  },
+  "district_heat": {
+   "name": "District heating",
+   "carrier": "district_heat",
+   "eff_heating": 0.97,
+   "eff_dhw": 0.9,
+   "fossil": "per_country",
+   "coins": 5
+  }
+ },
+ "emitters": {
+  "radiators_hT": {
+   "name": "High-temperature radiators",
+   "supply_C": 55
+  },
+  "radiators_lt": {
+   "name": "Low-temperature radiators",
+   "supply_C": 45
+  },
+  "floor_heating": {
+   "name": "Floor heating",
+   "supply_C": 35
+  }
+ },
+ "pv": {
+  "panel_Wp_per_m2": 210,
+  "loss_default": 0.14,
+  "coins_per_kWp": 4,
+  "note": "Yield per country/orientation from data/climate (PVGIS, 1 kWp at 35deg south); scale by orientation factor"
+ },
+ "solar_thermal": {
+  "collector_yield_kWh_m2a": {
+   "north_eu": 350,
+   "central_eu": 400,
+   "south_eu": 550
+  },
+  "max_dhw_share": 0.6,
+  "coins_per_m2": 3,
+  "status": "assumption",
+  "note": "Simplified: yield capped at 60% of DHW demand"
+ }
+}

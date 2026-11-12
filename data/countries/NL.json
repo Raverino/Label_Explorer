@@ -1,0 +1,167 @@
+{
+ "id": "NL",
+ "name": "Netherlands",
+ "available": true,
+ "scheme": "Energielabel (NTA 8800) + BENG",
+ "method": "NTA 8800:2025+C1:2026 (monthly, CEN EPB based)",
+ "legal_basis": "Besluit bouwwerken leefomgeving (Bbl), Omgevingsregeling Bijlage IX",
+ "climate": [
+  "NL"
+ ],
+ "floor_area": {
+  "code": "Ag",
+  "name": "gebruiksoppervlakte (usable floor area)",
+  "basis": "internal",
+  "status": "official"
+ },
+ "label": {
+  "version": "NL-2021 scale, Omgevingsregeling version 2026-10-06",
+  "valid_from": "2021-01-01",
+  "valid_to": "2029-12-31",
+  "indicator": "pe_fossil",
+  "indicator_name": "EP2 primary fossil energy",
+  "unit": "kWh/m2.yr",
+  "scale": {
+   "classes": [
+    {
+     "class": "A++++",
+     "max": 0
+    },
+    {
+     "class": "A+++",
+     "max": 50
+    },
+    {
+     "class": "A++",
+     "max": 75
+    },
+    {
+     "class": "A+",
+     "max": 105
+    },
+    {
+     "class": "A",
+     "max": 160
+    },
+    {
+     "class": "B",
+     "max": 190
+    },
+    {
+     "class": "C",
+     "max": 250
+    },
+    {
+     "class": "D",
+     "max": 290
+    },
+    {
+     "class": "E",
+     "max": 335
+    },
+    {
+     "class": "F",
+     "max": 380
+    },
+    {
+     "class": "G",
+     "max": null
+    }
+   ],
+   "status": "official",
+   "strictly_below": false
+  },
+  "source": "https://wetten.overheid.nl/jci1.3:c:BWBR0045528&bijlage=IX",
+  "marks": [
+   {
+    "mark": "A0",
+    "rule": "single-family new build, permit after 2026-05-29: EP2 <= 27, BENG 1 and 3 met, no on-site fossil combustion",
+    "status": "official",
+    "source": "https://zoek.officielebekendmakingen.nl/stcrt-2026-18123.pdf"
+   }
+  ],
+  "next_change": "2030-01-01: A-G scale on total primary energy with a new method (thresholds not yet published)"
+ },
+ "factors": {
+  "valid_from": "2026",
+  "source_doc": "NTA 8800:2026 tabel 5.2/5.3/5.4 (consultation draft) and RVO UMGO 5.3",
+  "electricity": {
+   "pe_tot": 1.35,
+   "pe_fossil": 1.45,
+   "co2": 0.268,
+   "status": "official",
+   "source": "https://www.rvo.nl/sites/default/files/2026-08/WE30102%20Uniforme%20Maatlat%20Gebouwde%20Omgeving%205.3.pdf",
+   "note": "fP;del = fP;exp = 1.45 (fossil). Total PE factor 1.35, export 1.00. CO2 0.340 under NTA 8800:2025, 0.268 from 2026. Confirmed by a private NTA 8800 tool run (numbers kept offline); CO2 applies to net metered electricity after PV."
+  },
+  "gas": {
+   "pe_fossil": 1.0,
+   "co2": 0.183,
+   "status": "official",
+   "source": "https://www.internetconsultatie.nl/epg2026/document/14147",
+   "note": "Factors on gross calorific value (HHV). CO2: 0.183 in the 2024/2025 tables; the 2026 draft lists 0.183 and 0.218 in track changes - which is final is unverified."
+  },
+  "oil": {
+   "pe_fossil": 1.0,
+   "status": "official",
+   "source": "https://www.internetconsultatie.nl/epg2026/document/14147"
+  },
+  "biomass": {
+   "pe_fossil": 0.5,
+   "status": "official",
+   "source": "https://www.internetconsultatie.nl/epg2026/document/14147",
+   "note": "Stoves/boilers <=500 kW meeting Annex R emission criteria; 1.0 if not; 0.0 above 500 kW."
+  },
+  "district_heat": {
+   "pe_fossil": 0.9,
+   "status": "official",
+   "source": "https://www.internetconsultatie.nl/epg2026/document/14147",
+   "note": "Default (forfaitair) value without a BCRG declaration; renewable factor 0. Networks with a BCRG EMG declaration use their own values (e.g. Klaprozenbuurt Amsterdam: fP;del 0.41, fPren 0.70, CO2 0.076)."
+  },
+  "renewable_factors": {
+   "pv_electricity": 1.45,
+   "ambient_heat": 1.0,
+   "status": "official",
+   "source": "https://www.internetconsultatie.nl/epg2026/document/14147",
+   "note": "Table 5.4, used for BENG 3"
+  }
+ },
+ "pv_rule": "Self-used and exported PV both credited at the electricity factor 1.45 (net metering in EP2).",
+ "requirements": {
+  "BENG1_heat_demand": {
+   "formula": "55 if Als/Ag<=1.5; 55+30*(Als/Ag-1.5) up to 3.0; 100+50*(Als/Ag-3.0) above",
+   "unit": "kWh/m2.yr",
+   "status": "official",
+   "source": "https://wetten.overheid.nl/BWBR0041297/2026-09-24/#Hoofdstuk4_Afdeling4.5_Paragraaf4.5.2",
+   "note": "Bbl art. 4.149 and tabel 4.148A, row 'andere woonfunctie' (houses), version 2026-09-24. +5 kWh/m2.yr when the specific internal heat capacity is 180 kJ/m2K or less (art. 4.149 lid 4)."
+  },
+  "BENG2_primary_fossil": {
+   "max": 30,
+   "unit": "kWh/m2.yr",
+   "status": "official",
+   "source": "https://wetten.overheid.nl/BWBR0041297/2026-09-24/#Hoofdstuk4_Afdeling4.5_Paragraaf4.5.2"
+  },
+  "BENG3_renewable_share": {
+   "min": 50,
+   "unit": "%",
+   "status": "official",
+   "source": "https://wetten.overheid.nl/BWBR0041297/2026-09-24/#Hoofdstuk4_Afdeling4.5_Paragraaf4.5.2"
+  },
+  "TOjuli": {
+   "max": 1.2,
+   "status": "official",
+   "source": "https://www.rvo.nl/onderwerpen/wetten-en-regels-gebouwen/beng/indicatoren",
+   "note": "Per orientation and calculation zone; GTO <= 450 h as alternative (RVO, checked 2026-11-09)"
+  }
+ },
+ "conventions": {
+  "heating_setpoint_C": {
+   "value": 20,
+   "status": "unverified"
+  }
+ },
+ "gaps": [
+  "NTA 8800 internal gains, DHW demand and ventilation defaults (in the paid NTA text)",
+  "Final 2026 gas CO2 factor (0.183 vs 0.218)",
+  "De Bilt reference year confirmed only as common knowledge"
+ ]
+}

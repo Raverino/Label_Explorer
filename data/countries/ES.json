@@ -1,0 +1,132 @@
+{
+ "id": "ES",
+ "name": "Spain",
+ "available": true,
+ "scheme": "Certificado de eficiencia energética",
+ "method": "CTE DB-HE 2019 tools (HULC / CE3X)",
+ "legal_basis": "RD 390/2021",
+ "climate": [
+  "ES"
+ ],
+ "climate_note": "v1 uses climate zone D3 (Madrid). ~40 zones exist.",
+ "floor_area": {
+  "code": "S_util",
+  "name": "useful floor area",
+  "basis": "internal",
+  "status": "official"
+ },
+ "label": {
+  "version": "Calificación (Annex IV) zone D3, single-family",
+  "valid_from": "2021-06-01",
+  "indicator": "pe_nren",
+  "indicator_name": "non-renewable primary energy (heating, cooling, DHW)",
+  "unit": "kWh/m2.yr",
+  "scale": {
+   "classes": [
+    {
+     "class": "A",
+     "max": 54.2
+    },
+    {
+     "class": "B",
+     "max": 87.8
+    },
+    {
+     "class": "C",
+     "max": 136.1
+    },
+    {
+     "class": "D",
+     "max": 209.3
+    },
+    {
+     "class": "E",
+     "max": 375.6
+    },
+    {
+     "class": "F",
+     "max": 473.2
+    },
+    {
+     "class": "G",
+     "max": null
+    }
+   ],
+   "status": "official",
+   "strictly_below": true
+  },
+  "second_rating": {
+   "indicator": "co2",
+   "unit": "kgCO2/m2.yr",
+   "classes": [
+    {
+     "class": "A",
+     "max": 12.2
+    },
+    {
+     "class": "B",
+     "max": 19.9
+    },
+    {
+     "class": "C",
+     "max": 30.8
+    },
+    {
+     "class": "D",
+     "max": 47.3
+    },
+    {
+     "class": "E",
+     "max": 83.7
+    },
+    {
+     "class": "F",
+     "max": 100.4
+    },
+    {
+     "class": "G",
+     "max": null
+    }
+   ],
+   "status": "official",
+   "strictly_below": true
+  },
+  "source": "https://www.eic.cat/promocio/e_serveis/normativa/doc_reconocidos_certificado_eficiencia_energetica/Calificaci%C3%B3n%20de%20la%20eficiencia%20energ%C3%A9tica%20de%20los%20edificios.pdf",
+  "note": "Downloaded copy may be a pre-publication version (cover date 'XX'). Other zones: C2, E1, A3 tables in the same annex."
+ },
+ "factors": {
+  "source_doc": "Documento Reconocido RITE: Factores de emisión de CO2 y coeficientes de paso a energía primaria (2016)",
+  "electricity": {
+   "pe_tot": 2.368,
+   "pe_nren": 1.954,
+   "co2": 0.331,
+   "status": "official",
+   "source": "https://www.certificadosenergeticos.com/wp-content/uploads/2018/12/Factores_emision_CO2.pdf",
+   "note": "Peninsular grid"
+  },
+  "gas": {
+   "pe_tot": 1.195,
+   "pe_nren": 1.19,
+   "co2": 0.252,
+   "status": "official",
+   "source": "https://www.certificadosenergeticos.com/wp-content/uploads/2018/12/Factores_emision_CO2.pdf"
+  },
+  "oil": {
+   "pe_tot": 1.182,
+   "pe_nren": 1.179,
+   "co2": 0.311,
+   "status": "official",
+   "source": "https://www.certificadosenergeticos.com/wp-content/uploads/2018/12/Factores_emision_CO2.pdf"
+  },
+  "lpg": {
+   "pe_tot": 1.204,
+   "pe_nren": 1.201,
+   "co2": 0.254,
+   "status": "official",
+   "source": "https://www.certificadosenergeticos.com/wp-content/uploads/2018/12/Factores_emision_CO2.pdf"
+  }
+ },
+ "gaps": [
+  "Tables for other climate zones"
+ ]
+}

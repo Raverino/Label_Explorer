@@ -1,0 +1,138 @@
+{
+ "id": "DE",
+ "name": "Germany",
+ "available": true,
+ "scheme": "Energieausweis (Bedarfsausweis)",
+ "method": "DIN V 18599:2018-09 (monthly); DIN/TS 18599:2025-10 from 2027",
+ "legal_basis": "Gebäudemodernisierungsgesetz (GModG, ex-GEG), BGBl. 2026 I Nr. 226",
+ "climate": [
+  "DE"
+ ],
+ "floor_area": {
+  "code": "A_N",
+  "name": "Gebäudenutzfläche",
+  "basis": "volume",
+  "formula": "A_N = 0.32 * V_e (heated gross volume)",
+  "status": "secondary",
+  "note": "GModG § 3 Nr. 10 defines A_N by DIN V 18599:2018-09; the 0.32 factor sits in the DIN text (paid), not in the law. Typically 1.2-1.35 x living area."
+ },
+ "label": {
+  "version": "GEG/GModG Anlage 10",
+  "valid_from": "2020-11-01",
+  "indicator": "final",
+  "indicator_name": "Endenergiebedarf (final energy)",
+  "unit": "kWh/m2.a",
+  "scale": {
+   "classes": [
+    {
+     "class": "A+",
+     "max": 30
+    },
+    {
+     "class": "A",
+     "max": 50
+    },
+    {
+     "class": "B",
+     "max": 75
+    },
+    {
+     "class": "C",
+     "max": 100
+    },
+    {
+     "class": "D",
+     "max": 130
+    },
+    {
+     "class": "E",
+     "max": 160
+    },
+    {
+     "class": "F",
+     "max": 200
+    },
+    {
+     "class": "G",
+     "max": 250
+    },
+    {
+     "class": "H",
+     "max": null
+    }
+   ],
+   "status": "official",
+   "strictly_below": false
+  },
+  "source": "https://www.gesetze-im-internet.de/geg/anlage_10.html",
+  "note": "The July 2026 GModG kept A+..H for residential buildings; A-G applies only to non-residential from 2027."
+ },
+ "factors": {
+  "valid_from": "2024",
+  "source_doc": "GEG Anlage 4 (PE, non-renewable) and Anlage 9 (CO2)",
+  "electricity": {
+   "pe_nren": 1.8,
+   "co2": 0.56,
+   "status": "official",
+   "source": "https://www.gesetze-im-internet.de/geg/anlage_4.html"
+  },
+  "gas": {
+   "pe_nren": 1.1,
+   "co2": 0.24,
+   "status": "official",
+   "source": "https://www.gesetze-im-internet.de/geg/anlage_4.html"
+  },
+  "oil": {
+   "pe_nren": 1.1,
+   "co2": 0.31,
+   "status": "official",
+   "source": "https://www.gesetze-im-internet.de/geg/anlage_4.html",
+   "note": "CO2 from Anlage 9 (310 g/kWh)"
+  },
+  "lpg": {
+   "pe_nren": 1.1,
+   "co2": 0.27,
+   "status": "official",
+   "source": "https://www.gesetze-im-internet.de/geg/anlage_4.html",
+   "note": "CO2 from Anlage 9"
+  },
+  "wood": {
+   "pe_nren": 0.2,
+   "co2": 0.02,
+   "status": "official",
+   "source": "https://www.gesetze-im-internet.de/geg/anlage_4.html",
+   "note": "CO2 from Anlage 9 (20 g/kWh)"
+  },
+  "district_heat": {
+   "pe_nren": 0.7,
+   "co2": 0.18,
+   "status": "secondary",
+   "note": "Anlage 4 has no district-heat row (network operators publish their own factor). CO2 0.180 is Anlage 9 'KWK, gaseous/liquid fuels' (official); Anlage 9 also lists KWK coal 0.300, KWK renewable 0.040, heating plant gas 0.300, renewable 0.060. PE 0.7 is a secondary-source default."
+  },
+  "next_change": "2027-01-01: requirements move to total PE, electricity 1.5 (secondary source, unverified)"
+ },
+ "pv_rule": "PV self-consumption reduces final energy; label is on final energy so factors do not change the class.",
+ "requirements": {
+  "primary_energy_vs_reference": {
+   "max_ratio": 0.55,
+   "status": "official",
+   "source": "https://www.gesetze-im-internet.de/geg/__15.html"
+  }
+ },
+ "conventions": {
+  "heating_setpoint_C": {
+   "value": 20,
+   "status": "unverified"
+  },
+  "dhw_kWh_m2a": {
+   "value": 12.5,
+   "status": "official",
+   "source": "https://www.gesetze-im-internet.de/geg/__20.html",
+   "note": "GModG § 20 Abs. 2: 12.5 kWh per m2 A_N and year"
+  }
+ },
+ "gaps": [
+  "DIN V 18599-10 usage profile (internal gains, DHW) is paywalled",
+  "Potsdam reference climate confirmed only by snippet"
+ ]
+}

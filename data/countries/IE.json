@@ -1,0 +1,151 @@
+{
+ "id": "IE",
+ "name": "Ireland",
+ "available": true,
+ "scheme": "Building Energy Rating (BER)",
+ "method": "DEAP 4.2.7 (monthly, single zone, IS EN 13790; cooling EN ISO 52016-1)",
+ "legal_basis": "EPBD regulations signed April 2026 (S.I. number not found)",
+ "climate": [
+  "IE"
+ ],
+ "floor_area": {
+  "code": "TFA",
+  "name": "total floor area, internal dimensions",
+  "basis": "internal",
+  "status": "official"
+ },
+ "label": {
+  "version": "BER 2026 (A0-G)",
+  "valid_from": "2026-05-24",
+  "indicator": "pe_tot",
+  "indicator_name": "total primary energy",
+  "unit": "kWh/m2.yr",
+  "scale": {
+   "classes": [
+    {
+     "class": "A0",
+     "max": 42
+    },
+    {
+     "class": "A",
+     "max": 75
+    },
+    {
+     "class": "B",
+     "max": 150
+    },
+    {
+     "class": "C",
+     "max": 225
+    },
+    {
+     "class": "D",
+     "max": 275
+    },
+    {
+     "class": "E",
+     "max": 325
+    },
+    {
+     "class": "F",
+     "max": 375
+    },
+    {
+     "class": "G",
+     "max": null
+    }
+   ],
+   "status": "official",
+   "strictly_below": false
+  },
+  "source": "https://www.seai.ie/sites/default/files/2026-07/BER-Combined-Advertising-Guidelines.pdf",
+  "a0_criteria": [
+   "<= 5 kgCO2eq/m2.yr",
+   "no on-site fossil fuel",
+   "grid responsive",
+   "carbon-free supply",
+   "NZEB compliant"
+  ],
+  "note": "'<=' boundary convention inferred from the certificate mock-up. Old 15-band A1-G scale for BERs issued before 2026-05-24."
+ },
+ "factors": {
+  "valid_from": "2026-05-25",
+  "source_doc": "SEAI SBEMie 5.7 notes (electricity) and DEAP manual Table 8 (fuels)",
+  "electricity": {
+   "pe_tot": 1.5,
+   "co2": 0.1685,
+   "status": "official",
+   "source": "https://seai.ie/sites/default/files/2026-07/Introduction-to-SBEMie-version5.7b.pdf",
+   "note": "Stated for SBEMie 5.7a (non-domestic, from 2026-05-25); DEAP uses the same SEAI electricity factors (DEAP manual 4.2.7 Table 8 note 8 points to one SEAI publication for both). The 2023 SEAI factors were about 1.75 and 0.224 (secondary). Export PEF 1.0."
+  },
+  "gas": {
+   "pe_tot": 1.1,
+   "pe_nren": 1.1,
+   "co2": 0.203,
+   "status": "official",
+   "source": "https://www.seai.ie/sites/default/files/publications/DEAP_Manual.pdf",
+   "note": "DEAP 4.2.7 (June 2025) Table 8"
+  },
+  "lpg": {
+   "pe_tot": 1.1,
+   "pe_nren": 1.1,
+   "co2": 0.232,
+   "status": "official",
+   "source": "https://www.seai.ie/sites/default/files/publications/DEAP_Manual.pdf",
+   "note": "DEAP 4.2.7 Table 8"
+  },
+  "oil": {
+   "pe_tot": 1.1,
+   "pe_nren": 1.1,
+   "co2": 0.272,
+   "status": "official",
+   "source": "https://www.seai.ie/sites/default/files/publications/DEAP_Manual.pdf",
+   "note": "DEAP 4.2.7 Table 8"
+  },
+  "wood": {
+   "pe_tot": 1.1,
+   "pe_nren": 0.1,
+   "co2": 0.025,
+   "status": "official",
+   "source": "https://www.seai.ie/sites/default/files/publications/DEAP_Manual.pdf",
+   "note": "DEAP 4.2.7 Table 8, wood pellets bulk / logs / chips"
+  },
+  "district_heat": {
+   "pe_tot": 1.1,
+   "pe_nren": 1.1,
+   "co2": 0.057,
+   "status": "official",
+   "source": "https://www.seai.ie/sites/default/files/publications/DEAP_Manual.pdf",
+   "note": "DEAP 4.2.7 Table 8 'heat from boilers - waste combustion'; waste heat from power stations 1.05 / 0.018; scheme-specific factors from SEAI otherwise"
+  }
+ },
+ "requirements": {
+  "EPC": {
+   "max_ratio": 0.3
+  },
+  "CPC": {
+   "max_ratio": 0.35
+  },
+  "RER": {
+   "min": 0.2
+  },
+  "status": "official",
+  "source": "https://www.seai.ie/sites/default/files/publications/DEAP_Manual.pdf"
+ },
+ "conventions": {
+  "heating_setpoint_C": {
+   "value": "21 living area / 18 rest",
+   "status": "official",
+   "source": "https://www.seai.ie/sites/default/files/publications/DEAP_Manual.pdf#page=55",
+   "note": "DEAP 4.2.7 §7.1: heating 07-09 and 17-23 every day (56 h/week)"
+  },
+  "occupancy": {
+   "formula": "N = 1 + 1.76*(1-exp(-0.000349*(TFA-13.9)^2)) + 0.0013*(TFA-13.9), N = 1 if TFA <= 13.9",
+   "status": "official",
+   "source": "https://www.seai.ie/sites/default/files/publications/DEAP_Manual.pdf#page=55"
+  }
+ },
+ "gaps": [
+  "DEAP 2026 electricity factors are read from the SBEMie note, not a DEAP document"
+ ]
+}

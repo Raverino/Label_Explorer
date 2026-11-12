@@ -1,0 +1,183 @@
+{
+ "id": "EE",
+ "name": "Estonia",
+ "available": true,
+ "scheme": "Energiamärgis (ETA)",
+ "method": "Regulation 58 (simulation based)",
+ "legal_basis": "Regulation 36 Annex 3 (reworded 2026-07-09)",
+ "climate": [
+  "EE"
+ ],
+ "floor_area": {
+  "code": "A_heated",
+  "name": "heated area",
+  "basis": "internal",
+  "status": "unverified"
+ },
+ "label": {
+  "version": "2026-07-09",
+  "valid_from": "2026-07-09",
+  "indicator": "weighted",
+  "indicator_name": "ETA weighted energy",
+  "unit": "kWh/m2.a",
+  "scale_type": "area_bands",
+  "bands": [
+   {
+    "area_max": 120,
+    "classes": [
+     {
+      "class": "A",
+      "max": 135
+     },
+     {
+      "class": "B",
+      "max": 160
+     },
+     {
+      "class": "C",
+      "max": 185
+     },
+     {
+      "class": "D",
+      "max": 235
+     },
+     {
+      "class": "E",
+      "max": 285
+     },
+     {
+      "class": "F",
+      "max": 350
+     },
+     {
+      "class": "G",
+      "max": null
+     }
+    ],
+    "status": "official",
+    "strictly_below": false
+   },
+   {
+    "area_max": 220,
+    "classes": [
+     {
+      "class": "A",
+      "max": 120
+     },
+     {
+      "class": "B",
+      "max": 140
+     },
+     {
+      "class": "C",
+      "max": 160
+     },
+     {
+      "class": "D",
+      "max": 210
+     },
+     {
+      "class": "E",
+      "max": 260
+     },
+     {
+      "class": "F",
+      "max": 330
+     },
+     {
+      "class": "G",
+      "max": null
+     }
+    ],
+    "status": "official",
+    "strictly_below": false
+   },
+   {
+    "area_max": null,
+    "classes": [
+     {
+      "class": "A",
+      "max": 100
+     },
+     {
+      "class": "B",
+      "max": 120
+     },
+     {
+      "class": "C",
+      "max": 140
+     },
+     {
+      "class": "D",
+      "max": 200
+     },
+     {
+      "class": "E",
+      "max": 250
+     },
+     {
+      "class": "F",
+      "max": 320
+     },
+     {
+      "class": "G",
+      "max": null
+     }
+    ],
+    "status": "official",
+    "strictly_below": false
+   }
+  ],
+  "source": "https://www.riigiteataja.ee/aktilisa/1210/7202/6006/KLIM_m63_lisa3.pdf"
+ },
+ "factors": {
+  "source_doc": "Regulation nr 63 (2018) 'Hoone energiatõhususe miinimumnõuded' § 9 lg 1, version in force 2026-09-01; listed as 'kehtiv' in the Climate Ministry study of May 2026. CO2 from the Climate Ministry 2025 footprint model",
+  "electricity": {
+   "weight": 2.0,
+   "co2": 0.612,
+   "status": "official",
+   "source": "https://estlex.ee/oigusakt/hoone-energiatohususe-miinimumnouded",
+   "note": "The May 2026 Climate Ministry study proposes 1.8 and 0.215 kg CO2/kWh; not adopted as of 2026-11-12"
+  },
+  "district_heat_efficient": {
+   "weight": 0.65,
+   "co2": 0.157,
+   "status": "official",
+   "source": "https://estlex.ee/oigusakt/hoone-energiatohususe-miinimumnouded",
+   "note": "'Tõhus kaugküte': at least 50% renewable, 50% waste heat or 75% CHP heat"
+  },
+  "district_heat": {
+   "weight": 0.9,
+   "co2": 0.157,
+   "status": "official",
+   "source": "https://estlex.ee/oigusakt/hoone-energiatohususe-miinimumnouded"
+  },
+  "gas": {
+   "weight": 1.0,
+   "co2": 0.195,
+   "status": "official",
+   "source": "https://estlex.ee/oigusakt/hoone-energiatohususe-miinimumnouded"
+  },
+  "renewable_fuels": {
+   "weight": 0.65,
+   "status": "official",
+   "source": "https://estlex.ee/oigusakt/hoone-energiatohususe-miinimumnouded",
+   "note": "Wood, wood-based fuel and other biofuel (not peat)"
+  },
+  "oil": {
+   "co2": 0.267,
+   "status": "official",
+   "source": "https://kliimaministeerium.ee/rohereform-kliima/rohereform/organisatsioonide-jalajalg#mudel"
+  },
+  "lpg": {
+   "co2": 0.228,
+   "status": "official",
+   "source": "https://kliimaministeerium.ee/rohereform-kliima/rohereform/organisatsioonide-jalajalg#mudel"
+  }
+ },
+ "gaps": [
+  "Weighting factors read in the Estlex consolidation (Riigi Teataja page did not load)",
+  "Whether the method is hourly",
+  "CO2 factors are from the ministry footprint model, not the label method"
+ ]
+}

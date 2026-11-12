@@ -1,0 +1,171 @@
+{
+ "meta": {
+  "generated": "2026-11-10",
+  "status": "typical",
+  "basis": "typical design value (EN ISO 10456 / manufacturer ranges)"
+ },
+ "surface_resistance": {
+  "wall": {
+   "Rsi": 0.13,
+   "Rse": 0.04
+  },
+  "roof": {
+   "Rsi": 0.1,
+   "Rse": 0.04
+  },
+  "floor_ground": {
+   "Rsi": 0.17,
+   "Rse": 0.0
+  },
+  "floor_crawl": {
+   "Rsi": 0.17,
+   "Rse": 0.17
+  }
+ },
+ "materials": {
+  "brick_clay": {
+   "name": "Clay brick",
+   "lambda": 0.8,
+   "rho": 1800,
+   "c": 840,
+   "kind": "structure"
+  },
+  "sand_lime": {
+   "name": "Sand-lime block",
+   "lambda": 1.0,
+   "rho": 1800,
+   "c": 840,
+   "kind": "structure"
+  },
+  "concrete": {
+   "name": "Reinforced concrete",
+   "lambda": 2.3,
+   "rho": 2400,
+   "c": 1000,
+   "kind": "structure"
+  },
+  "aerated_concrete": {
+   "name": "Aerated concrete",
+   "lambda": 0.11,
+   "rho": 450,
+   "c": 1000,
+   "kind": "structure"
+  },
+  "porotherm": {
+   "name": "Insulating clay block",
+   "lambda": 0.09,
+   "rho": 700,
+   "c": 1000,
+   "kind": "structure"
+  },
+  "clt": {
+   "name": "Cross-laminated timber",
+   "lambda": 0.13,
+   "rho": 470,
+   "c": 1600,
+   "kind": "structure"
+  },
+  "timber_frame": {
+   "name": "Timber stud (frame)",
+   "lambda": 0.13,
+   "rho": 500,
+   "c": 1600,
+   "kind": "structure"
+  },
+  "mineral_wool": {
+   "name": "Mineral wool",
+   "lambda": 0.035,
+   "rho": 30,
+   "c": 1030,
+   "kind": "insulation"
+  },
+  "eps": {
+   "name": "EPS",
+   "lambda": 0.032,
+   "rho": 20,
+   "c": 1450,
+   "kind": "insulation"
+  },
+  "pir": {
+   "name": "PIR board",
+   "lambda": 0.022,
+   "rho": 32,
+   "c": 1400,
+   "kind": "insulation"
+  },
+  "xps": {
+   "name": "XPS",
+   "lambda": 0.034,
+   "rho": 35,
+   "c": 1450,
+   "kind": "insulation"
+  },
+  "wood_fibre": {
+   "name": "Wood fibre",
+   "lambda": 0.04,
+   "rho": 160,
+   "c": 2100,
+   "kind": "insulation",
+   "biobased": true
+  },
+  "hemp": {
+   "name": "Hemp batts",
+   "lambda": 0.04,
+   "rho": 40,
+   "c": 1700,
+   "kind": "insulation",
+   "biobased": true
+  },
+  "cellulose": {
+   "name": "Blown cellulose",
+   "lambda": 0.039,
+   "rho": 50,
+   "c": 2000,
+   "kind": "insulation",
+   "biobased": true
+  },
+  "straw": {
+   "name": "Straw bale",
+   "lambda": 0.052,
+   "rho": 100,
+   "c": 1600,
+   "kind": "insulation",
+   "biobased": true
+  },
+  "gypsum_board": {
+   "name": "Gypsum board",
+   "lambda": 0.25,
+   "rho": 900,
+   "c": 1000,
+   "kind": "finish"
+  },
+  "plaster": {
+   "name": "Lime plaster",
+   "lambda": 0.7,
+   "rho": 1600,
+   "c": 1000,
+   "kind": "finish"
+  },
+  "timber_cladding": {
+   "name": "Timber cladding",
+   "lambda": 0.13,
+   "rho": 500,
+   "c": 1600,
+   "kind": "finish"
+  },
+  "screed": {
+   "name": "Cement screed",
+   "lambda": 1.4,
+   "rho": 2000,
+   "c": 1000,
+   "kind": "finish"
+  },
+  "roof_tiles": {
+   "name": "Roof tiles (ventilated, not counted)",
+   "lambda": null,
+   "rho": 2000,
+   "c": 800,
+   "kind": "finish"
+  }
+ }
+}

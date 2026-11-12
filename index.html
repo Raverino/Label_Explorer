@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Label Explorer</title>
+    <meta name="description" content="Build a small house step by step and see its provisional energy label in 14 European label schemes." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="brand"><span class="logo" aria-hidden="true"></span><span class="brand-text">Label Explorer<small>one house, many European energy labels</small></span></div>
+      <ol class="steps" id="steps">
+        <li data-step="1" class="active">Pick a country</li>
+        <li data-step="2">Choose a start</li>
+        <li data-step="3">Build your house</li>
+        <li data-step="4">Compare Europe</li>
+      </ol>
+    </header>
+
+    <main>
+      <section id="pick" class="screen">
+        <div id="map" class="map-wrap"><div id="map-tip" class="tip hidden"></div></div>
+        <aside class="panel">
+          <h1>Pick a country</h1>
+          <p class="muted">Every EU country has an energy label for homes, but each one measures something different. An "A" in one country can be a "C" next door.</p>
+          <p class="muted">Choose where your house stands. You can switch country at any time and compare all of them at the end.</p>
+          <div class="legend-map">
+            <span><i class="sw on"></i>Available now (14 schemes)</span>
+            <span><i class="sw soon"></i>Coming soon</span>
+          </div>
+          <div id="be-choice" class="be-choice hidden">
+            <p><b>Belgium has three regional labels.</b> Which one?</p>
+            <div class="row" id="be-buttons"></div>
+          </div>
+          <div class="what-label">
+            <h2>What is an energy label?</h2>
+            <p>A school report for a home's energy use. Experts calculate how much energy the house needs in a <b>standard year</b>: standard weather, a standard family, rooms at a standard temperature. That makes houses fair to compare.</p>
+            <div class="strip generic"><i style="background:#00a651">A</i><i style="background:#50b848">B</i><i style="background:#bfd730">C</i><i style="background:#fff200;color:#23262f;text-shadow:none">D</i><i style="background:#fdb913">E</i><i style="background:#f37021">F</i><i style="background:#ed1c24">G</i></div>
+            <ul>
+              <li>🧾 <b>Not your bill.</b> Long showers or a warm 23 °C living room cost more than the label says.</li>
+              <li>📐 <b>Per m².</b> Energy is divided by the floor area, so big and small homes are judged alike.</li>
+              <li>🏷️ <b>Required.</b> In the EU, sellers and landlords must show it.</li>
+            </ul>
+          </div>
+<details class="credits"><summary>Sources and credits</summary>
+      Climate and solar data: <a href="https://joint-research-centre.ec.europa.eu/photovoltaic-geographical-information-system-pvgis_en" target="_blank" rel="noopener">PVGIS 5.3</a>, European Commission JRC.
+      Prices: <a href="https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table" target="_blank" rel="noopener">Eurostat</a>.
+      Map: © EuroGeographics (Eurostat GISCO).
+      Label rules from each country's legal texts; every value carries a quality flag (see Result → Expert view).
+      Built with Claude (Anthropic) as a coding assistant; the method, data choices and checks are the author's.
+    </details>
+          <p class="muted small">Labels here are <b>provisional</b>: one shared, simplified calculation mapped onto each country's own scale. They show the differences between schemes, not an official certificate.</p>
+        </aside>
+      </section>
+
+      <section id="start" class="screen hidden">
+        <div class="start-wrap">
+          <h1 id="start-title">How do you want to start?</h1>
+          <div id="label-explainer" class="explain"></div>
+          <div class="start-cards">
+            <div class="start-card">
+              <div class="start-art" aria-hidden="true">🏠</div>
+              <h2>Ready-made house</h2>
+              <p class="muted">Pick a label and we set up a random house that gets it, with random walls, windows and heating. Then open each step to see why it scores that way.</p>
+              <div id="class-buttons" class="class-buttons"></div>
+              <p id="ready-note" class="muted small"></p>
+            </div>
+            <div class="start-card">
+              <div class="start-art" aria-hidden="true">🧱</div>
+              <h2>Build step by step</h2>
+              <p class="muted">Start on an empty plot. Draw the floor plan, choose walls, roof and floor, place every window yourself, then pick the heating and solar.</p>
+              <div class="chips"><span>1 Shape</span><span>2 Construction</span><span>3 Windows</span><span>4 Installations</span><span>5 Result</span></div>
+              <button id="start-build" class="btn primary">Start building →</button>
+            </div>
+          </div>
+          <button id="start-back" class="btn">← Country</button>
+        </div>
+      </section>
+
+      <section id="build" class="screen hidden">
+        <div class="stage">
+          <div id="three"></div>
+          <div class="stage-ui">
+            <div class="seg" role="group" aria-label="Drawing tool" data-show="shape">
+              <button data-tool="rect" class="on" title="Click two opposite corners">▭ Rectangle</button>
+              <button data-tool="corners" title="Click corner after corner; double-click to finish">✎ Draw</button>
+              <button data-tool="wing" title="Add a rectangle that touches the house">＋ Add wing</button>
+              <button data-tool="look" title="Only turn and zoom">👁 Look</button>
+            </div>
+            <div class="seg" role="group" aria-label="Edit outline" data-show="shape">
+              <button id="shape-undo" title="Remove the last corner (Backspace)">↶ Undo point</button>
+            </div>
+            <div class="seg" role="group" aria-label="Storeys" data-show="shape">
+              <button data-storeys="1">1</button>
+              <button data-storeys="2" class="on">2</button>
+              <button data-storeys="3">3</button>
+              <span class="seg-label">storeys</span>
+            </div>
+            <div class="seg" role="group" aria-label="Roof" data-show="shape">
+              <button data-roof="gable" class="on">Pitched roof</button>
+              <button data-roof="flat">Flat roof</button>
+            </div>
+            <div class="seg" role="group" aria-label="Quick shapes" data-show="shape">
+              <button id="shape-rect">8 × 6 block</button>
+              <button id="shape-clear">Clear</button>
+            </div>
+            <div class="seg" role="group" aria-label="View">
+              <button id="zoom-in" aria-label="Zoom in">+</button>
+              <button id="zoom-out" aria-label="Zoom out">−</button>
+              <button id="turn-left" aria-label="Turn left">↺</button>
+              <button id="turn-right" aria-label="Turn right">↻</button>
+            </div>
+          </div>
+          <div id="stage-hint" class="stage-hint"></div>
+          <div id="xsec" class="xsec hidden"></div>
+          <div id="hud" class="hud"></div>
+        </div>
+
+        <div class="side">
+          <div class="label-card" id="label-card"></div>
+          <ol class="substeps" id="substeps"></ol>
+          <div class="tab-body" id="step-body"></div>
+          <nav class="wizard-nav">
+            <button id="sub-back" class="btn">← Back</button>
+            <button id="sub-next" class="btn primary">Next →</button>
+          </nav>
+        </div>
+      </section>
+
+      <section id="compare" class="screen hidden">
+        <div class="compare-head">
+          <div>
+            <h1>Your house on a European tour</h1>
+            <p class="muted">The exact same house, judged by 14 countries. Each judge uses its own rules, its own weather and its own grading ladder.</p>
+          </div>
+          <div class="row">
+            <button id="back-build" class="btn">← Back to the house</button>
+          </div>
+        </div>
+        <div id="compare-hero" class="compare-hero"></div>
+        <div id="compare-grid" class="compare-grid"></div>
+        <div id="compare-why" class="why"></div>
+      </section>
+    </main>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

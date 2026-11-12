@@ -1,0 +1,10 @@
+node_modules
+dist
+__pycache__
+
+# kept offline (confidential source)
+data/validation/NL_factor_check_1.json
+# local tooling
+CLAUDE.md
+.claude/
+data/.Rhistory

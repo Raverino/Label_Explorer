@@ -1,0 +1,46 @@
+{
+ "meta": {
+  "generated": "2026-11-10",
+  "status": "typical",
+  "basis": "typical design value (EN ISO 10456 / manufacturer ranges)"
+ },
+ "airtightness": {
+  "leaky": {
+   "name": "Standard (no test)",
+   "n50": 6.0,
+   "coins": 0
+  },
+  "good": {
+   "name": "Good (taped)",
+   "n50": 3.0,
+   "coins": 2
+  },
+  "very_good": {
+   "name": "Very good (tested)",
+   "n50": 1.0,
+   "coins": 4
+  },
+  "passive": {
+   "name": "Passive house level",
+   "n50": 0.6,
+   "coins": 6
+  }
+ },
+ "thermal_bridges": {
+  "default": {
+   "name": "Not detailed",
+   "dU": 0.1,
+   "coins": 0
+  },
+  "standard": {
+   "name": "Standard details",
+   "dU": 0.05,
+   "coins": 2
+  },
+  "free": {
+   "name": "Thermal-bridge free",
+   "dU": 0.0,
+   "coins": 4
+  }
+ }
+}
