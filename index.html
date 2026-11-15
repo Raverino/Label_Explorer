@@ -20,12 +20,17 @@
         <li data-step="4">Compare Europe</li>
       </ol>
     </header>
+    <div id="desktop-mode" class="desk-banner hidden" role="alert">
+      <span>📱 Your browser is showing the <b>desktop version</b>, so everything is tiny. Open the browser menu (⋮) and untick <b>Desktop site</b> for the phone layout.</span>
+      <button class="btn" aria-label="Close">OK</button>
+    </div>
 
     <main>
       <section id="pick" class="screen">
         <div id="map" class="map-wrap"><div id="map-tip" class="tip hidden"></div></div>
         <aside class="panel">
           <h1>Pick a country</h1>
+          <p id="device-note" class="note hidden">💻 <b>Best on a laptop.</b> It works on a phone too, but drawing the house and placing windows is easier on a big screen with a mouse.</p>
           <p class="muted">Every EU country has an energy label for homes, but each one measures something different. An "A" in one country can be a "C" next door.</p>
           <p class="muted">Choose where your house stands. You can switch country at any time and compare all of them at the end.</p>
           <div class="legend-map">

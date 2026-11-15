@@ -32,7 +32,20 @@ const MIN_CELLS = 4;
 // ---------- Phones and tablets ----------
 /** A touch screen without a mouse: say "tap" instead of "click" and drop mouse-only tips. */
 const TOUCH = matchMedia("(hover: none) and (pointer: coarse)").matches;
-const PHONE = matchMedia("(max-width: 700px), (max-height: 500px) and (orientation: landscape)");
+/** Screens where the 3D view is too narrow to share with a cross-section column: the cross-section goes in the panel. */
+const XSEC_IN_PANEL = matchMedia("(max-width: 1200px), (max-height: 500px) and (orientation: landscape)");
+const SMALL_SCREEN = Math.min(screen.width, screen.height) <= 600;
+/** Phone browsers in "desktop site" mode lay the page out about 980 px wide: everything ends up tiny. */
+const desktopModeOnPhone = () => TOUCH && SMALL_SCREEN && innerWidth > screen.width * 1.3;
+if (desktopModeOnPhone()) {
+  // Ask for the real phone width; some browsers honour a fixed width even in desktop mode.
+  document.querySelector('meta[name="viewport"]')?.setAttribute("content", `width=${screen.width}, initial-scale=1, viewport-fit=cover`);
+}
+setTimeout(() => {
+  if (desktopModeOnPhone()) $("#desktop-mode").classList.remove("hidden");
+}, 400);
+$("#desktop-mode button").onclick = () => $("#desktop-mode").classList.add("hidden");
+if (TOUCH || SMALL_SCREEN || innerWidth < 900) $("#device-note").classList.remove("hidden");
 function tw(s: string) {
   if (!TOUCH) return s;
   return s
@@ -594,10 +607,10 @@ function renderQuality(body: HTMLElement) {
 /** Cross-section card on the 3D stage, always visible during the construction step. */
 function placeXsec() {
   const box = $("#xsec");
-  if (PHONE.matches) $(".side").insertBefore(box, $("#step-body"));
+  if (XSEC_IN_PANEL.matches) $(".side").insertBefore(box, $("#step-body"));
   else $(".stage").insertBefore(box, $("#hud"));
 }
-PHONE.addEventListener("change", () => {
+XSEC_IN_PANEL.addEventListener("change", () => {
   placeXsec();
   renderXsec();
 });
@@ -608,7 +621,7 @@ function renderXsec() {
   const on = sub === "construction" && house.cells.size >= MIN_CELLS;
   box.classList.toggle("hidden", !on);
   const stage = $(".stage");
-  const column = on && !PHONE.matches;
+  const column = on && !XSEC_IN_PANEL.matches;
   if (stage.classList.contains("with-xsec") !== column) {
     stage.classList.toggle("with-xsec", column);
     view?.resize();
