@@ -7,6 +7,7 @@ import { Face, HouseView, Tool } from "./house3d";
 import { classColor } from "./labels";
 import { COUNTRY_FACTS, plainFor } from "./explain";
 import { drawMap } from "./map";
+import { houseFromLink, houseLink, shareImage } from "./share";
 import { CONSTRUCTION_INFO, FRAME_INFO, GLAZING_INFO, MATERIAL_INFO, SYSTEM_INFO, frameSVG, glazingSVG, insulationSwatch, sectionLegend, sectionSVG, systemSVG, windowFrontSVG, windowSizeSVG } from "./visuals";
 
 const $ = <T extends HTMLElement = HTMLElement>(sel: string, root: ParentNode = document) => root.querySelector(sel) as T;
@@ -324,9 +325,15 @@ function setSub(s: Sub) {
   }
   renderSubsteps();
   renderBody();
-  $("#step-body").scrollTop = 0;
+  scrollPanelTop();
   renderNav();
   update();
+}
+
+/** Back to the top of the step: the step body scrolls on a laptop, the whole panel on a phone. */
+function scrollPanelTop() {
+  $("#step-body").scrollTop = 0;
+  $(".side").scrollTop = 0;
 }
 
 function renderSubsteps() {
@@ -503,18 +510,17 @@ function setElement(k: (typeof CONS_STEPS)[number]) {
   element = k;
   consVisited.add(k);
   renderBody();
-  $("#step-body").scrollTop = 0;
+  scrollPanelTop();
   renderNav();
   update();
 }
 
 function renderConstruction(body: HTMLElement) {
-  const i = CONS_STEPS.indexOf(element);
   const steps = el("ol", "ministeps");
   steps.innerHTML = CONS_STEPS.map((k, j) => `<li><button data-el="${k}" class="${k === element ? "on" : ""} ${consVisited.has(k) && k !== element ? "done" : ""}">${j + 1} ${consName(k)}</button></li>`).join('<li class="arrow">→</li>');
   steps.querySelectorAll<HTMLButtonElement>("[data-el]").forEach((b) => (b.onclick = () => setElement(b.dataset.el as (typeof CONS_STEPS)[number])));
   body.appendChild(steps);
-  body.appendChild(el("p", "step-help", `<b>Step ${i + 1} of 4 · ${consName(element)}.</b> ${CONS_HELP[element]} The cross-section next to the house shows your build-up.`));
+  body.appendChild(el("p", "step-help", CONS_HELP[element]));
   if (element === "quality") return renderQuality(body);
   const l = element === "wall" ? house.wall : element === "roof" ? house.roofBuild : house.floor;
   body.appendChild(layeredEditor(element, l));
@@ -867,6 +873,8 @@ function update() {
   }
   const r = evaluate(house, country);
   baseScore = r.indicator.value;
+  $("#label-card").classList.toggle("on-result", sub === "result");
+  $("#hud").classList.toggle("hidden", sub === "result");
   renderLabel(r);
   renderHud(r, systemsShown);
   chipRefreshers.forEach((f) => f());
@@ -880,12 +888,12 @@ function update() {
 function renderHud(r: CountryResult, systemsShown: boolean) {
   const fails = r.code.filter((c) => !c.ok && c.kind === "element_max").length;
   $("#hud").innerHTML = `
-    <span>Floor area <b>${fmt(r.area)} m²</b> <small class="muted">(${r.areaCode})</small></span>
+    <span title="Floor area as this country measures it (${r.areaCode})">Floor area <b>${fmt(r.area)} m²</b></span>
     <span>Heat need <b>${fmt(r.perM2.heatNeed)}</b> kWh/m²</span>
     <span>CO₂ <b>${fmt(r.co2 / 1000, 1)} t</b>/yr</span>
     <span>${r.cost >= 0 ? `Bills <b>€${fmt(r.cost)}</b>/yr` : `Earns <b>€${fmt(-r.cost)}</b>/yr`}</span>
-    ${fails ? `<span class="warn">⚠ ${fails} element${fails > 1 ? "s" : ""} below the building code</span>` : ""}
-    ${systemsShown ? "" : `<span class="muted small">Until you choose installations, a gas boiler is assumed.</span>`}`;
+    ${fails ? `<span class="warn">⚠ ${fails} below code</span>` : ""}
+    ${systemsShown ? "" : `<span class="soft">Gas boiler assumed until you choose installations</span>`}`;
 }
 
 let shownScore: number | null = null;
@@ -970,13 +978,35 @@ function renderDetails(r: CountryResult) {
   const max = Math.max(1, ...r.heatNeedMonthly);
   const d = r.delivered;
   const carriers = Object.entries(d).filter(([, v]) => v > 0.5).map(([k, v]) => `<dt>${k.replace("_", " ")}</dt><dd>${fmt(v)} kWh</dd>`).join("");
-  const code = r.code.map((c) => `<li>${c.element}: ${fmt(c.value, 2)} vs ${fmt(c.limit, 2)} ${c.unit} <span class="pill ${c.kind === "element_max" || c.kind === "envelope_average" ? (c.ok ? "ok" : "bad") : ""}">${c.kind === "element_max" || c.kind === "envelope_average" ? (c.ok ? "ok" : "not met") : c.ok ? "better than reference" : "worse than reference"}</span></li>`).join("");
+  const code = r.code.map((c) => {
+    const isLimit = c.kind === "element_max" || c.kind === "envelope_average";
+    const higherBetter = /K\/W/.test(c.unit);
+    const scale = Math.max(c.value, c.limit) * 1.25 || 1;
+    const tag = isLimit ? (c.ok ? "ok" : "not met") : c.ok ? "better" : "worse";
+    const cls = c.ok ? "ok" : isLimit ? "bad" : "ref";
+    const what = isLimit ? (higherBetter ? "min" : "max") : "ref.";
+    return `<div class="crow" title="${c.element}: ${fmt(c.value, 2)} ${c.unit}, ${what} ${fmt(c.limit, 2)}">
+      <b>${c.element.replace(/ ?(U|Rc|average)$/i, "")}</b>
+      <span class="cbar"><i class="${cls}" style="width:${(c.value / scale) * 100}%"></i><em style="left:${(c.limit / scale) * 100}%"></em></span>
+      <span class="ctag ${cls}">${tag}</span>
+      <small>${fmt(c.value, 2)} · ${what} ${fmt(c.limit, 2)}</small>
+    </div>`;
+  }).join("");
+  const codeUnit = r.code[0]?.unit ?? "";
   const bc = BUILDING_CODE[country];
+  queueMicrotask(() => $("#step-body").appendChild(shareBox()));
   const beng1 = country === "NL" ? `<dt>BENG 1 (heating + cooling need)</dt><dd>${fmt((r.heatNeed + r.coolNeed) / r.area, 1)} kWh/m²</dd>` : "";
   const note = readyMessage ? `<div class="note">${readyMessage}</div>` : "";
   body.innerHTML = `${note}
     ${fullScale(r)}
     <div class="group"><h3>Energy per year <small>${r.climate.station} climate</small></h3>
+      <div class="etiles">
+        <div class="etile"><span>🔥 Heat need</span><b>${fmt(r.perM2.heatNeed)}</b><small>kWh/m²</small></div>
+        <div class="etile"><span>💶 ${r.cost >= 0 ? "Bills" : "Earns"}</span><b>€${fmt(Math.abs(r.cost))}</b><small>per year</small></div>
+        <div class="etile"><span>🌫️ CO₂</span><b>${fmt(r.co2 / 1000, 1)} t</b><small>per year</small></div>
+        <div class="etile"><span>☀️ Solar</span><b>${fmt(r.pv.generated)}</b><small>kWh made</small></div>
+      </div>
+      <details class="more"><summary>All numbers</summary>
       <dl class="kv">
         <dt>Heating need</dt><dd>${fmt(r.heatNeed)} kWh · ${fmt(r.perM2.heatNeed)} /m²</dd>
         <dt>Cooling need</dt><dd>${fmt(r.coolNeed)} kWh</dd>
@@ -990,14 +1020,14 @@ function renderDetails(r: CountryResult) {
         <dt>Primary energy, non-renewable</dt><dd>${fmt(r.perM2.peNren)} kWh/m²</dd>
         <dt>CO₂</dt><dd>${fmt(r.co2)} kg · ${fmt(r.perM2.co2, 1)} /m²</dd>
         <dt>Energy bills (2026 prices)</dt><dd>${r.cost >= 0 ? "" : "−"}€${fmt(Math.abs(r.cost))}</dd>
-      </dl>
+      </dl></details>
     </div>
     <div class="group"><h3>Heating need per month</h3>
       <div class="months">${r.heatNeedMonthly.map((v) => `<i style="height:${(v / max) * 100}%" title="${fmt(v)} kWh"></i>`).join("")}</div>
       <div class="months-l">${MONTHS.map((m) => `<span>${m}</span>`).join("")}</div>
     </div>
-    <div class="group"><h3>Building code <small>${bc ? bc.kind.replace("_", " ") : ""}</small></h3>
-      ${code ? `<ul style="margin:0;padding-left:18px;font-size:13px">${code}</ul>` : `<p class="muted small" style="margin:0">${bc?.note ?? "No element limits."}</p>`}
+    <div class="group"><h3>Building code <small>${codeUnit}</small></h3>
+      ${code ? `<div class="code-rows">${code}</div><p class="muted xsmall">Bar: your house. Black line: the code ${bc?.kind === "element_max" ? "limit" : "value"}.</p>` : `<p class="muted small" style="margin:0">${bc?.note ?? "No element limits."}</p>`}
       ${bc ? `<p class="muted small" style="margin:0">${bc.note ?? ""} <span class="flag ${bc.status}">${bc.status}</span></p>` : ""}
     </div>
     <details class="group expert"><summary>Expert view</summary>
@@ -1048,6 +1078,7 @@ function renderCompare() {
     </button>`;
   }).join("");
   $$<HTMLButtonElement>(".ccard").forEach((b) => (b.onclick = () => ((country = b.dataset.country!), setStep(3))));
+  $("#compare-share").replaceChildren(shareBox(true));
   const tiles = [
     ["🎯", "They aim at different things", "Some only judge the walls and windows, some the energy your meters would show, and some trace every kWh back to the power plant."],
     ["⚡", "Electricity weighs differently", "One kWh from the socket counts 1.2 in Finland but 2.5 in Belgium and Slovenia, so a heat pump scores very differently."],
@@ -1073,3 +1104,87 @@ if (import.meta.env.DEV) (window as unknown as Record<string, unknown>).__lx = {
   };
 }
 drawMap($("#map"), $("#map-tip"), pickCountry).catch((e) => ($("#map").textContent = `Map failed to load: ${e}`));
+
+// ---------- Save and share ----------
+function shareBox(big = false) {
+  const box = el("div", big ? "why share-box" : "group share-box", `
+    <h3>Save or share your house</h3>
+    <p class="muted small">The link opens this exact house again, on any device. The image shows it with its label in every country.</p>
+    <div class="row">
+      <button class="btn primary" data-img>Create share image</button>
+      <button class="btn" data-link>Copy link</button>
+    </div>
+    <p class="muted small share-msg" aria-live="polite"></p>
+    <div class="share-out hidden">
+      <img alt="Share image: your house and its label in every country" />
+      <div class="row"><button class="btn primary" data-download>Download image</button><button class="btn hidden" data-native>Share…</button></div>
+    </div>`);
+  const msg = box.querySelector<HTMLElement>(".share-msg")!;
+  const out = box.querySelector<HTMLElement>(".share-out")!;
+  let blob: Blob | undefined;
+  const fileName = () => `my-house-${country.toLowerCase()}-label-explorer.png`;
+  box.querySelector<HTMLButtonElement>("[data-link]")!.onclick = async () => {
+    const url = houseLink(house, country);
+    history.replaceState(null, "", url);
+    try {
+      if (TOUCH && navigator.share) await navigator.share({ title: "My house in Label Explorer", url });
+      else {
+        await navigator.clipboard.writeText(url);
+        msg.textContent = "Link copied. Paste it anywhere to open this house again; bookmarking this page works too.";
+      }
+    } catch {
+      msg.textContent = "The link is now in the address bar: bookmark or copy it from there.";
+    }
+  };
+  box.querySelector<HTMLButtonElement>("[data-img]")!.onclick = async () => {
+    if (!view) return;
+    msg.textContent = "Drawing your image…";
+    view.render(house, { roof: true, systems: true });
+    const rel = (r: CountryResult) => r.label.index / Math.max(1, r.label.classes.length - 1);
+    const all = evaluateAll(house).sort((a, b) => rel(a) - rel(b));
+    blob = await shareImage(view.snapshot(), evaluate(house, country), all);
+    msg.textContent = "";
+    out.querySelector("img")!.src = URL.createObjectURL(blob);
+    out.classList.remove("hidden");
+    const file = new File([blob], fileName(), { type: "image/png" });
+    out.querySelector<HTMLElement>("[data-native]")!.classList.toggle("hidden", !navigator.canShare?.({ files: [file] }));
+    out.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  };
+  out.querySelector<HTMLButtonElement>("[data-download]")!.onclick = () => {
+    if (!blob) return;
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = fileName();
+    a.click();
+  };
+  out.querySelector<HTMLButtonElement>("[data-native]")!.onclick = () => {
+    if (!blob) return;
+    const file = new File([blob], fileName(), { type: "image/png" });
+    navigator.share({ files: [file], title: "My house across Europe", text: `My house gets a different energy label in every country. Build yours: ${location.origin}${location.pathname}` }).catch(() => {});
+  };
+  return box;
+}
+
+// A shared link opens that house on its Result step.
+{
+  const shared = houseFromLink();
+  let ok = false;
+  if (shared) {
+    try {
+      evaluate(shared.house, shared.country);
+      ok = shared.house.cells.size >= MIN_CELLS;
+    } catch {
+      ok = false;
+    }
+  }
+  if (shared && ok) {
+    Object.assign(house, shared.house);
+    country = shared.country;
+    mode = "ready";
+    reached = SUBSTEPS.length - 1;
+    sub = "result";
+    readyMessage = "This is a shared house. Open each step to see how it is built, and change anything.";
+    syncShapeButtons();
+    setStep(3);
+  }
+}

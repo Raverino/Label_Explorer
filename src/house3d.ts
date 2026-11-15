@@ -458,6 +458,27 @@ export class HouseView {
     this.camera.updateProjectionMatrix();
   }
 
+  /** A PNG of the house from the current angle, w x h pixels; works while the view is hidden. */
+  snapshot(w = 1000, h = 620): string {
+    const pr = this.renderer.getPixelRatio();
+    const hover = this.hover.visible;
+    this.hover.visible = false;
+    this.renderer.setPixelRatio(1);
+    this.renderer.setSize(w, h, false);
+    const view = 22, aspect = w / h;
+    this.camera.left = (-view * aspect) / 2;
+    this.camera.right = (view * aspect) / 2;
+    this.camera.top = view / 2 + 1;
+    this.camera.bottom = -view / 2 + 1;
+    this.camera.updateProjectionMatrix();
+    this.renderer.render(this.scene, this.camera);
+    const url = this.renderer.domElement.toDataURL("image/png");
+    this.hover.visible = hover;
+    this.renderer.setPixelRatio(pr);
+    this.resize();
+    return url;
+  }
+
   turn(dir: 1 | -1) {
     const t = this.controls.target;
     const off = this.camera.position.clone().sub(t).applyAxisAngle(new THREE.Vector3(0, 1, 0), (dir * Math.PI) / 4);
