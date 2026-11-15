@@ -73,6 +73,9 @@ Values whose confidence is still not high. None of them blocks the app: the engi
 
 ## C. Known approximations (documented, not blocking)
 
+- *2026-11-15, engine:* ground floors now follow EN ISO 13370 (characteristic dimension B', equivalent thickness d_t, crawl-space U_x, periodic method so the ground lags the air; default soil λ 2.0 / ρc 2.0 MJ/m³K). Opaque walls and roof now get sun on their outer surface and lose heat to the sky (EN ISO 52016-1 monthly, α 0.6, Δθ_er 11 K). Hand checks in `tests/engine.test.ts`.
+- **Reference climates** (biggest remaining method gap): every country uses its own reference year (NL NEN 5060:2018 De Bilt; DE DIN V 18599-10 table E.6, TRY 2011 region 4 Potsdam; etc.). These tables are paid or behind a free DWD account; checked 2026-11-15 that the BBSR guidance (Maas/Schlitzberger 2013) cites but does not print the Potsdam table. Until then: PVGIS long-term means (flag `proxy`).
+
 - Climate: PVGIS long-term means instead of each national reference year.
 - Spain: zone D3 (Madrid) only; Austria: Vienna only; Croatia: both reference stations.
 - Catalogue values are generic typical values, not products. BCRG product declarations can replace them later.

@@ -1,28 +1,54 @@
 {
-  "what": "Label Explorer engine vs published NTA 8800 results for the RVO BENG reference house 'woning L vrij' (detached, 8 x 11 m, two storeys + 45 deg pitched roof with heated attic, Ag 181 m2, Als/Ag 2.14)",
-  "date": "2026-11-11",
-  "sources": {
-    "results": "RVO / DGMR (2021) BENG voorbeeldconcepten woningbouw, bijlage 1 (concepts) and bijlage 3 (BENG 1 sensitivity), https://rvo.nl/sites/default/files/2021/07/beng-voorbeeldconcepten-woningbouw.pdf",
-    "geometry": "RVO / DGMR (2016) Referentiegebouwen BENG, table 1 and section 4.3, https://www.rvo.nl/sites/default/files/2017/02/Referentiegebouwen%20BENG.pdf",
-    "inputs": "Rockwool BENG reference sheet 'vrijstaande woning L': Rc 3.7/4.7/6.3, Uw 1.4, g 0.6, qv10 0.4, forfaitaire psi"
+ "what": "Label Explorer engine vs published NTA 8800 results for the RVO BENG reference house 'woning L vrij' (detached, 8 x 11 m, two storeys + 45 deg pitched roof with heated attic, Ag 181 m2, Als/Ag 2.14)",
+ "date": "2026-11-15",
+ "sources": {
+  "results": "RVO / DGMR (2021) BENG voorbeeldconcepten woningbouw, bijlage 1 (concepts) and bijlage 3 (BENG 1 sensitivity), https://rvo.nl/sites/default/files/2021/07/beng-voorbeeldconcepten-woningbouw.pdf",
+  "geometry": "RVO / DGMR (2016) Referentiegebouwen BENG, table 1 and section 4.3, https://www.rvo.nl/sites/default/files/2017/02/Referentiegebouwen%20BENG.pdf",
+  "inputs": "Rockwool BENG reference sheet 'vrijstaande woning L': Rc 3.7/4.7/6.3, Uw 1.4, g 0.6, qv10 0.4, forfaitaire psi"
+ },
+ "inputs_used": "Rc set exactly by insulation thickness; glass 27% of each facade; n50 1.6 /h (from qv10 0.4); thermal bridges 'not detailed' (+0.10 W/m2K); air-to-water heat pump, floor heating, exhaust ventilation",
+ "beng1_heating_plus_cooling_kWh_m2": [
+  {
+   "case": "base: code level, massive, 27% glass",
+   "nta8800": 67.5,
+   "engine": 61.3,
+   "diff_pct": -9
   },
-  "inputs_used": "Rc set exactly by insulation thickness; glass 27% of each facade; n50 1.6 /h (from qv10 0.4); thermal bridges 'not detailed' (+0.10 W/m2K); air-to-water heat pump, floor heating, exhaust ventilation",
-  "beng1_heating_plus_cooling_kWh_m2": [
-    { "case": "base: code level, massive, 27% glass", "nta8800": 67.5, "engine": 59.3, "diff_pct": -12 },
-    { "case": "timber frame (HSB) with concrete floor", "nta8800": 71.5, "engine": 71.0, "diff_pct": -1 },
-    { "case": "50% glass", "nta8800": 78.9, "engine": 80.3, "diff_pct": 2 },
-    { "case": "passive envelope + triple glass (our Rc 6/7/8 is a guess of the passive package)", "nta8800": 57.8, "engine": 45.3, "diff_pct": -22 }
-  ],
-  "beng2_ep_fossil_kWh_m2": [
-    { "case": "air-to-water heat pump, exhaust ventilation C4c, 2,100 Wp PV (west in the reference, south-ish in the engine)", "nta8800": 29.5, "engine": 20.5, "diff_pct": -31 }
-  ],
-  "calibration_made": [
-    "cooling need added (BENG 1 = heating + cooling); summer window airing +1.5 /h in the cooling balance",
-    "thermal mass classes 250 / 180 / 130 / 90 kJ/m2K (NTA reference uses 130 for mixed light)",
-    "heated attic under a pitched roof counted in floor area and volume",
-    "heat-pump SCOP lowered to in-use seasonal values (air-water 3.4 at 35 C)",
-    "emission + distribution losses 10%, hydronic pump 150 kWh/yr"
-  ],
-  "remaining_gap": "BENG 2 is ~30% low. Likely causes: NTA 8800 usage conventions (ventilation rate, hot water, internal gains, still unknown, OPEN_DATA_GAPS A2), PV orientation, NTA heat-pump and auxiliary defaults. The user's own single-family run (A1) is the next check.",
-  "test": "tests/engine.test.ts (npx vitest run)"
+  {
+   "case": "timber frame (HSB) with concrete floor",
+   "nta8800": 71.5,
+   "engine": 71.9,
+   "diff_pct": 1
+  },
+  {
+   "case": "50% glass",
+   "nta8800": 78.9,
+   "engine": 75.6,
+   "diff_pct": -4
+  },
+  {
+   "case": "passive envelope + triple glass (our Rc 6/7/8 is a guess of the passive package)",
+   "nta8800": 57.8,
+   "engine": 50.4,
+   "diff_pct": -13
+  }
+ ],
+ "beng2_ep_fossil_kWh_m2": [
+  {
+   "case": "air-to-water heat pump, exhaust ventilation C4c, 2,100 Wp PV (west in the reference, south-ish in the engine)",
+   "nta8800": 29.5,
+   "engine": 22.2,
+   "diff_pct": -25
+  }
+ ],
+ "calibration_made": [
+  "cooling need added (BENG 1 = heating + cooling); summer window airing +1.5 /h in the cooling balance",
+  "thermal mass classes 250 / 180 / 130 / 90 kJ/m2K (NTA reference uses 130 for mixed light)",
+  "heated attic under a pitched roof counted in floor area and volume",
+  "heat-pump SCOP lowered to in-use seasonal values (air-water 3.4 at 35 C)",
+  "emission + distribution losses 10%, hydronic pump 150 kWh/yr",
+  "2026-11-15: ground floor by EN ISO 13370 (B', d_t, crawl-space U_x, periodic lag) instead of a fixed factor 0.6/0.8; sun on opaque walls/roof and radiation to the sky (EN ISO 52016-1 monthly). Not a calibration: method changes, numbers above re-run."
+ ],
+ "remaining_gap": "BENG 1 within -13..+1%. BENG 2 ~25% low. Likely causes: NTA 8800 usage conventions (ventilation rate, hot water, internal gains, OPEN_DATA_GAPS A2), PV orientation, NTA heat-pump and auxiliary defaults, and the PVGIS climate instead of NEN 5060:2018. The user's own single-family run (A1) is the next check.",
+ "test": "tests/engine.test.ts (npx vitest run)"
 }

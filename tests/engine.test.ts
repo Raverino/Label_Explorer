@@ -4,7 +4,7 @@
 
 import { describe, expect, it } from "vitest";
 import { AIRTIGHTNESS, CLIMATES, COUNTRIES, MATERIALS, SURFACE_R } from "../src/data";
-import { evaluate, evaluateAll, heatBalance } from "../src/engine";
+import { evaluate, evaluateAll, groundLoss, heatBalance } from "../src/engine";
 import { House, Layered, fillWindows, geometry, key, layerU, starterHouse } from "../src/house";
 import { classify } from "../src/labels";
 
@@ -92,16 +92,38 @@ describe("Label boundaries", () => {
 });
 
 describe("Energy balance sanity", () => {
-  it("with no gains, the need equals (H_tr + H_ve) x degree-hours", () => {
+  it("with no sun or people, the need equals air-side losses + ground (ISO 13370) + sky radiation", () => {
     const h = referenceL();
-    const cl = CLIMATES.NL;
+    const dark = Object.fromEntries(Object.entries(CLIMATES.NL.irr_kWh_m2).map(([k, v]) => [k, v.map(() => 0)]));
+    const cl = { ...CLIMATES.NL, irr_kWh_m2: dark } as typeof CLIMATES.NL;
     const hb = heatBalance(h, cl, { setpoint: 20, gains: 0, dhw: 0, ach: 0.5, status: "" });
     h.windows = [];
     const hb0 = heatBalance(h, cl, { setpoint: 20, gains: 0, dhw: 0, ach: 0.5, status: "" });
-    const days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    const jan = ((hb0.Htr + hb0.Hve) * (20 - cl.temp_C[0]) * days[0] * 24) / 1000;
+    const hours = 31 * 24;
+    const jan = ((hb0.HtrAir + hb0.Hve) * (20 - cl.temp_C[0]) * hours) / 1000 + hb0.ground.monthly(0, 20) + (hb0.skyW * hours) / 1000;
     expect(hb0.monthly[0]).toBeCloseTo(jan, 3);
     expect(hb.Htr).toBeGreaterThan(hb0.Htr); // windows lose more than wall
+  });
+});
+
+describe("Ground floor (EN ISO 13370), hand calculation for an 8 x 11 m floor", () => {
+  const T = CLIMATES.NL.temp_C;
+  it("uninsulated slab: B' 4.63 m, d_t 0.72 m < B', U = 4 / (pi B' + d_t) ln(pi B' / d_t + 1) = 0.80", () => {
+    const r = groundLoss(88, 38, { U: 1 / 0.21, R: 0 }, false, T);
+    expect(r.B).toBeCloseTo(4.632, 2);
+    expect(r.U).toBeCloseTo(0.8, 2);
+  });
+  it("slab with Rc 3.7: d_t 8.12 m > B', U = 2 / (0.457 B' + d_t) = 0.195", () => {
+    expect(groundLoss(88, 38, { U: 1 / 3.91, R: 3.7 }, false, T).U).toBeCloseTo(0.195, 3);
+  });
+  it("crawl space, floor Rc 3.7: 1/U = 1/U_f + 1/(U_g + U_x) gives about 0.20", () => {
+    expect(groundLoss(88, 38, { U: 1 / 4.04, R: 3.7 }, true, T).U).toBeCloseTo(0.2, 2);
+  });
+  it("the ground lags the air: the largest monthly loss comes after the coldest month", () => {
+    const r = groundLoss(88, 38, { U: 1 / 0.21, R: 0 }, false, T);
+    const perHour = T.map((_, m) => r.monthly(m, 20) / [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m]);
+    const cold = T.indexOf(Math.min(...T));
+    expect((perHour.indexOf(Math.max(...perHour)) - cold + 12) % 12).toBeGreaterThan(0);
   });
 });
 

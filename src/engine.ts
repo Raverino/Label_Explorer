@@ -13,8 +13,20 @@ const DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 /** Every modelling choice that is ours, not a country's, with its value. Shown in the expert view. */
 export const ASSUMPTIONS = {
   infiltration_e: 0.07, // EN 12831 shielding coefficient: n_inf = n50 * e
-  ground_b: 0.6, // slab on ground: reduction for the ground buffer (EN ISO 13370 simplified)
-  crawl_b: 0.8,
+  // Ground (EN ISO 13370, default soil when unknown: sand/gravel, table 7)
+  ground_lambda: 2.0, // W/mK
+  ground_rho_c: 2.0e6, // J/m3K
+  wall_thickness_m: 0.3, // w in d_t = w + lambda (Rsi + Rf + Rse)
+  crawl_height_m: 0.3, // h: crawl-space wall height above ground
+  crawl_wall_U: 1.5, // U_w of the crawl-space walls
+  crawl_vent_m2_per_m: 0.003, // epsilon: ventilation openings per m of perimeter
+  wind_m_s: 4, // v: mean wind speed at 10 m
+  wind_shield_fw: 0.05, // f_w: wind shielding factor (average)
+  // Opaque surfaces (EN ISO 52016-1 / 13790 11.3-11.4)
+  opaque_absorptance: 0.6, // alpha, default for walls and roofs
+  sky_dT_K: 11, // average air-sky temperature difference, mid latitudes
+  sky_hr_W_m2K: 4.5, // external radiative coefficient 5 x emissivity 0.9
+  pitched_roof_irr_factor: 0.9, // mean irradiation on two opposite 45 deg slopes vs horizontal
   solar_frame_shading: 0.9, // non-perpendicular incidence (EN ISO 13790 F_w)
   solar_obstruction: 0.9,
   emission_distribution_loss: 1.1,
@@ -177,6 +189,40 @@ function areaFor(c: Country, g: ReturnType<typeof geometry>) {
   }
 }
 
+/**
+ * Heat loss through the ground floor, EN ISO 13370. Steady part H_g from the characteristic
+ * dimension B' = A / (0.5 P); monthly part from the periodic method (annex A), so that the ground
+ * lags the outdoor air by one to three months. Returns H_g (W/K) and a function giving the loss
+ * in kWh for month m at indoor temperature ti.
+ */
+export function groundLoss(A: number, P: number, floor: { U: number; R: number }, crawl: boolean, temps: number[]) {
+  const a = ASSUMPTIONS;
+  const lam = a.ground_lambda;
+  const delta = Math.sqrt((3.15e7 * lam) / (Math.PI * a.ground_rho_c)); // periodic penetration depth, m
+  const B = P > 0 ? A / (0.5 * P) : Math.sqrt(A);
+  const uSlab = (d: number) => (d < B ? ((2 * lam) / (Math.PI * B + d)) * Math.log((Math.PI * B) / d + 1) : lam / (0.457 * B + d));
+  let U: number, Hpe: number, d: number;
+  if (!crawl) {
+    d = a.wall_thickness_m + lam * (0.17 + floor.R + 0.04);
+    U = uSlab(d);
+    Hpe = 0.37 * P * lam * Math.log(delta / d + 1);
+  } else {
+    d = a.wall_thickness_m + lam * (0.17 + 0.04); // uninsulated ground under the crawl space
+    const Ug = uSlab(d);
+    const Ux = (2 * a.crawl_height_m * a.crawl_wall_U) / B + (1450 * a.crawl_vent_m2_per_m * a.wind_m_s * a.wind_shield_fw) / B;
+    U = 1 / (1 / floor.U + 1 / (Ug + Ux));
+    Hpe = 1 / (1 / (A * floor.U) + 1 / (0.37 * P * lam * Math.log(delta / d + 1) + Ux * A));
+  }
+  const Hg = A * U;
+  const mean = temps.reduce((s, v) => s + v, 0) / 12;
+  const amp = (Math.max(...temps) - Math.min(...temps)) / 2;
+  const coldest = temps.indexOf(Math.min(...temps));
+  const lag = Math.min(3, Math.max(0, 1.5 - 0.42 * Math.log(delta / (d + 1)))); // months
+  const monthly = (m: number, ti: number) =>
+    ((Hg * (ti - mean) + Hpe * amp * Math.cos((2 * Math.PI * (m - coldest - lag)) / 12)) * DAYS[m] * 24) / 1000;
+  return { U, Hg, Hpe, B, lag, monthly };
+}
+
 /** Monthly heating need of the house in a climate with a country's usage conventions. */
 export function heatBalance(h: House, cl: Climate, conv: Conv) {
   const g = geometry(h);
@@ -188,8 +234,11 @@ export function heatBalance(h: House, cl: Climate, conv: Conv) {
   const door = DOORS[h.door];
   const tb = THERMAL_BRIDGES[h.thermalBridges];
   const winTotal = FACADES.reduce((s, f) => s + g.windowArea[f], 0);
-  const b = h.floor.construction === "floor_crawlspace" ? ASSUMPTIONS.crawl_b : ASSUMPTIONS.ground_b;
-  const Htr = wall.U * g.wallOpaque + roof.U * g.roofArea + b * floor.U * g.floorArea + win.U_w * winTotal + door.U * g.doorArea + tb.dU * g.envelope;
+  const P = FACADES.reduce((s, f) => s + g.edges[f], 0);
+  const ground = groundLoss(g.floorArea, P, floor, h.floor.construction === "floor_crawlspace", cl.temp_C);
+  // Above-ground transmission; the ground is added month by month (its loss lags the air).
+  const HtrAir = wall.U * g.wallOpaque + roof.U * g.roofArea + win.U_w * winTotal + door.U * g.doorArea + tb.dU * g.envelope;
+  const Htr = HtrAir + ground.Hg;
   const vent = SYSTEMS.ventilation[h.ventilation];
   const nInf = AIRTIGHTNESS[h.airtightness].n50 * ASSUMPTIONS.infiltration_e;
   const ach = conv.qVent !== undefined && g.airVolume > 0 ? (conv.qVent * 3.6 * g.usable) / g.airVolume : conv.ach;
@@ -199,6 +248,12 @@ export function heatBalance(h: House, cl: Climate, conv: Conv) {
   const massKey = wall.heavy && floor.heavy ? "heavy" : wall.heavy ? "medium" : floor.heavy ? "mixed_light" : "light";
   const C = (ASSUMPTIONS.heat_capacity_kJ_m2K[massKey] * 1000 * g.usable) / 3600; // Wh/K
   const tau = C / Math.max(1, Htr + Hve);
+  // Opaque walls and roof: sun on the outer surface (gain) and radiation to the cold sky (loss).
+  const K = ASSUMPTIONS;
+  const roofRseUA = 0.04 * roof.U * g.roofArea;
+  const roofFr = h.roof === "gable" ? (1 + Math.SQRT1_2) / 2 : 1;
+  const wallRseUA = (f: Facade) => 0.04 * wall.U * Math.max(0, g.wallGross[f] - g.windowArea[f] - (f === "S" ? g.doorArea : 0));
+  const skyW = K.sky_hr_W_m2K * K.sky_dT_K * (roofRseUA * roofFr + FACADES.reduce((s, f) => s + wallRseUA(f), 0) * 0.5);
   const a = 1 + tau / 15;
   const irrKey: Record<Facade, "N90" | "E90" | "S90" | "W90"> = { N: "N90", E: "E90", S: "S90", W: "W90" };
   const monthly: number[] = [];
@@ -206,13 +261,16 @@ export function heatBalance(h: House, cl: Climate, conv: Conv) {
   for (let m = 0; m < 12; m++) {
     const hours = DAYS[m] * 24;
     const internal = (conv.gains * g.usable * hours) / 1000;
+    const sky = (skyW * hours) / 1000;
+    let opaque = K.opaque_absorptance * roofRseUA * cl.irr_kWh_m2.H[m] * (h.roof === "gable" ? K.pitched_roof_irr_factor : 1);
+    for (const f of FACADES) opaque += K.opaque_absorptance * wallRseUA(f) * cl.irr_kWh_m2[irrKey[f]][m];
     let solar = 0;
     for (const f of FACADES) {
       solar += g.windowArea[f] * win.g * ASSUMPTIONS.solar_frame_shading * (1 - win.frame_fraction) * ASSUMPTIONS.solar_obstruction * cl.irr_kWh_m2[irrKey[f]][m];
     }
-    const gains = internal + solar;
+    const gains = internal + solar + opaque;
     // Heating
-    const loss = ((Htr + Hve) * Math.max(0, conv.setpoint - cl.temp_C[m]) * hours) / 1000;
+    const loss = conv.setpoint > cl.temp_C[m] ? ((HtrAir + Hve) * (conv.setpoint - cl.temp_C[m]) * hours) / 1000 + ground.monthly(m, conv.setpoint) + sky : 0;
     if (loss <= 0) monthly.push(0);
     else {
       const gamma = gains / loss;
@@ -220,7 +278,7 @@ export function heatBalance(h: House, cl: Climate, conv: Conv) {
       monthly.push(Math.max(0, loss - eta * gains));
     }
     // Cooling need (no cooling system is assumed; the need is reported and used where a method counts it)
-    const lossC = ((Htr + Hve + 0.34 * ASSUMPTIONS.summer_extra_ach * g.airVolume) * (ASSUMPTIONS.cooling_setpoint_C - cl.temp_C[m]) * hours) / 1000;
+    const lossC = ((HtrAir + Hve + 0.34 * ASSUMPTIONS.summer_extra_ach * g.airVolume) * (ASSUMPTIONS.cooling_setpoint_C - cl.temp_C[m]) * hours) / 1000 + ground.monthly(m, ASSUMPTIONS.cooling_setpoint_C) + sky;
     if (gains <= 0) monthlyCool.push(0);
     else if (lossC <= 0) monthlyCool.push(gains - lossC);
     else {
@@ -229,7 +287,7 @@ export function heatBalance(h: House, cl: Climate, conv: Conv) {
       monthlyCool.push(Math.max(0, gains - etaL * lossC));
     }
   }
-  return { g, monthly, monthlyCool, massKey, Htr, Hve, U: { wall: wall.U, roof: roof.U, floor: floor.U, window: win.U_w, door: door.U }, R: { wall: wall.R, roof: roof.R, floor: floor.R }, nEff, vent, windowKey: h.window, win, ach };
+  return { g, monthly, monthlyCool, massKey, Htr, HtrAir, ground, skyW, Hve, U: { wall: wall.U, roof: roof.U, floor: floor.U, window: win.U_w, door: door.U }, R: { wall: wall.R, roof: roof.R, floor: floor.R }, nEff, vent, windowKey: h.window, win, ach };
 }
 
 function latitudeRegion(lat: number) {
