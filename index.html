@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#ffffff" />
     <title>Label Explorer</title>
     <meta name="description" content="Build a small house step by step and see its provisional energy label in 14 European label schemes." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -31,6 +32,9 @@
             <span><i class="sw on"></i>Available now (14 schemes)</span>
             <span><i class="sw soon"></i>Coming soon</span>
           </div>
+          <label class="field country-list"><span>Or choose from a list</span>
+            <select id="country-list" aria-label="Choose a country"><option value="">Choose a country…</option></select>
+          </label>
           <div id="be-choice" class="be-choice hidden">
             <p><b>Belgium has three regional labels.</b> Which one?</p>
             <div class="row" id="be-buttons"></div>
@@ -92,6 +96,7 @@
             </div>
             <div class="seg" role="group" aria-label="Edit outline" data-show="shape">
               <button id="shape-undo" title="Remove the last corner (Backspace)">↶ Undo point</button>
+              <button id="shape-finish" title="Close the outline (or double-click)">✓ Finish</button>
             </div>
             <div class="seg" role="group" aria-label="Storeys" data-show="shape">
               <button data-storeys="1">1</button>
@@ -107,12 +112,12 @@
               <button id="shape-rect">8 × 6 block</button>
               <button id="shape-clear">Clear</button>
             </div>
-            <div class="seg" role="group" aria-label="View">
-              <button id="zoom-in" aria-label="Zoom in">+</button>
-              <button id="zoom-out" aria-label="Zoom out">−</button>
-              <button id="turn-left" aria-label="Turn left">↺</button>
-              <button id="turn-right" aria-label="Turn right">↻</button>
-            </div>
+          </div>
+          <div class="seg view-ctl" role="group" aria-label="View">
+            <button id="zoom-in" aria-label="Zoom in">+</button>
+            <button id="zoom-out" aria-label="Zoom out">−</button>
+            <button id="turn-left" aria-label="Turn left">↺</button>
+            <button id="turn-right" aria-label="Turn right">↻</button>
           </div>
           <div id="stage-hint" class="stage-hint"></div>
           <div id="xsec" class="xsec hidden"></div>

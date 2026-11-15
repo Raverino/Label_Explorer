@@ -1,5 +1,5 @@
 import "./style.css";
-import { AIRTIGHTNESS, BUILDING_CODE, CONSTRUCTIONS, COUNTRIES, DOORS, FRAMES, GLAZING, INSULATION_STEPS, IndexEntry, MATERIALS, SYSTEMS, THERMAL_BRIDGES } from "./data";
+import { AIRTIGHTNESS, BUILDING_CODE, CONSTRUCTIONS, COUNTRIES, DOORS, FRAMES, GLAZING, INDEX, INSULATION_STEPS, IndexEntry, MATERIALS, SYSTEMS, THERMAL_BRIDGES } from "./data";
 import { ASSUMPTIONS, CountryResult, evaluate, evaluateAll } from "./engine";
 import { houseForClass } from "./generator";
 import { CUSTOM_LIMITS, FACADES, Facade, House, Layered, WINDOW_SIZES, WindowSize, faceKey, fillWindows, geometry, key, layerU, maxPanels, placeWindow, starterHouse, validWindows, windowDims, windowProps, windowU } from "./house";
@@ -29,6 +29,23 @@ let element: "wall" | "roof" | "floor" | "quality" = "wall";
 let windowSize: WindowSize = "standard";
 const MIN_CELLS = 4;
 
+// ---------- Phones and tablets ----------
+/** A touch screen without a mouse: say "tap" instead of "click" and drop mouse-only tips. */
+const TOUCH = matchMedia("(hover: none) and (pointer: coarse)").matches;
+const PHONE = matchMedia("(max-width: 700px), (max-height: 500px) and (orientation: landscape)");
+function tw(s: string) {
+  if (!TOUCH) return s;
+  return s
+    .replace(/Double-click \(or click the first corner\) to finish/g, "Tap ✓ Finish (or the first corner) to finish")
+    .replace(/Double-click, or click the green post, to finish/g, "Tap ✓ Finish or the green post to finish")
+    .replace(/double-click to finish/g, "tap ✓ Finish")
+    .replace(/, or drag one from the panel/g, "")
+    .replace(/drag onto a wall, or pick and click/g, "pick a size, then tap a wall")
+    .replace(/Drag on the grass/g, "Swipe on the grass")
+    .replace(/Click/g, "Tap")
+    .replace(/click/g, "tap");
+}
+
 // ---------- Screens ----------
 type Screen = 1 | 2 | 3 | 4;
 function setStep(n: Screen) {
@@ -45,7 +62,7 @@ function setStep(n: Screen) {
       view.onDraft = (msg) => {
         if (sub !== "shape") return;
         const h = $("#stage-hint");
-        h.textContent = msg;
+        h.textContent = tw(msg);
         h.classList.toggle("hidden", !msg);
       };
       view.onFace = onFace;
@@ -117,7 +134,7 @@ function renderStart() {
     </div>`;
   const host = $("#class-buttons");
   host.innerHTML = classes.map((cl, i) => `<button class="cls" data-i="${i}" style="background:${classColor(i, classes.length)}">${fit(cl.class)}</button>`).join("");
-  $("#ready-note").textContent = "Click the class you want.";
+  $("#ready-note").textContent = tw("Click the class you want.");
   $$<HTMLButtonElement>(".cls", host).forEach((b) =>
     (b.onclick = () => {
       const i = Number(b.dataset.i);
@@ -176,7 +193,7 @@ function onShape(cells: Set<string>, tool: Tool) {
   // Done drawing: stop the tool so a stray click does not start a new outline.
   setTool("look");
   const h = $("#stage-hint");
-  h.textContent = "Shape done! Pick storeys and a roof above, or choose a drawing tool to change it.";
+  h.textContent = TOUCH ? "Shape done! Pick storeys and a roof above." : "Shape done! Pick storeys and a roof above, or choose a drawing tool to change it.";
   h.classList.remove("hidden");
   update();
   renderBody();
@@ -185,7 +202,7 @@ function onShape(cells: Set<string>, tool: Tool) {
 
 function flashHint(msg: string) {
   const h = $("#stage-hint");
-  h.textContent = msg;
+  h.textContent = tw(msg);
   h.classList.remove("hidden");
   h.classList.add("warn");
   setTimeout(() => h.classList.remove("warn"), 1800);
@@ -254,6 +271,11 @@ $("#shape-clear").onclick = () => {
   renderNav();
 };
 $("#shape-undo").onclick = () => view?.undoPoint();
+$("#shape-finish").onclick = () => {
+  if (!view) return;
+  if (view.tool === "corners" && view.draft.length >= 3) view.closeCorners();
+  else flashHint(view.tool === "corners" ? "Place at least 3 corners first." : "✓ Finish is for the ✎ Draw tool.");
+};
 $("#zoom-in").onclick = () => view?.zoom(1.2);
 $("#zoom-out").onclick = () => view?.zoom(1 / 1.2);
 $("#turn-left").onclick = () => view?.turn(-1);
@@ -284,7 +306,7 @@ function setSub(s: Sub) {
     result: "",
   };
   if (s !== "shape") {
-    $("#stage-hint").textContent = hints[s];
+    $("#stage-hint").textContent = tw(hints[s]);
     $("#stage-hint").classList.toggle("hidden", !hints[s]);
   }
   renderSubsteps();
@@ -435,11 +457,11 @@ const niceUnit = (u: string) => u.replace(/m2/g, "m²").replace(/[.·]?(a|yr)$/,
 // ---------- Step: shape ----------
 function renderShape(body: HTMLElement) {
   const g = group("Draw the floor plan", "1 square = 1 m");
-  g.appendChild(el("ol", "how", `
+  g.appendChild(el("ol", "how", tw(`
     <li><b>▭ Rectangle</b>: click one corner on the grass, then the opposite corner.</li>
     <li><b>✎ Draw</b>: for an L or U shape, click corner after corner. Walls snap straight and show their length. Double-click (or click the first corner) to finish; the grey line shows how it closes.</li>
     <li><b>＋ Add wing</b>: draw a rectangle against the house to extend it.</li>
-    <li>Then pick storeys and a roof at the top. Drag on the grass to turn the view.</li>`));
+    <li>Then pick storeys and a roof at the top. Drag on the grass to turn the view.</li>`)));
   const stats = el("dl", "kv");
   const gm = geometry(house);
   stats.innerHTML = house.cells.size
@@ -570,13 +592,25 @@ function renderQuality(body: HTMLElement) {
 }
 
 /** Cross-section card on the 3D stage, always visible during the construction step. */
+function placeXsec() {
+  const box = $("#xsec");
+  if (PHONE.matches) $(".side").insertBefore(box, $("#step-body"));
+  else $(".stage").insertBefore(box, $("#hud"));
+}
+PHONE.addEventListener("change", () => {
+  placeXsec();
+  renderXsec();
+});
+placeXsec();
+
 function renderXsec() {
   const box = $("#xsec");
   const on = sub === "construction" && house.cells.size >= MIN_CELLS;
   box.classList.toggle("hidden", !on);
   const stage = $(".stage");
-  if (stage.classList.contains("with-xsec") !== on) {
-    stage.classList.toggle("with-xsec", on);
+  const column = on && !PHONE.matches;
+  if (stage.classList.contains("with-xsec") !== column) {
+    stage.classList.toggle("with-xsec", column);
     view?.resize();
   }
   if (!on) return;
@@ -657,7 +691,7 @@ function renderWindows(body: HTMLElement) {
   res.appendChild(el("div", "", `<div id="win-preview"></div>`));
   body.appendChild(res);
 
-  const p = group("c · Size, then place it", "drag onto a wall, or pick and click");
+  const p = group("c · Size, then place it", tw("drag onto a wall, or pick and click"));
   const pal = el("div", "palette four");
   const sizes: WindowSize[] = ["small", "standard", "tall", "custom"];
   const custom = el("div", "custom-size");
@@ -671,7 +705,7 @@ function renderWindows(body: HTMLElement) {
     const dims = windowDims({ size: s, w: customW, h: customH });
     const b = el("button", "opt", `${windowSizeSVG(s, customW, customH)}<span>${name}</span><small class="dims">${fmt(dims.w, 1)} × ${fmt(dims.h, 1)} m</small>`);
     b.dataset.k = s;
-    b.draggable = true;
+    b.draggable = !TOUCH;
     b.onclick = () => ((windowSize = s), paintPal());
     b.ondragstart = (e) => {
       windowSize = s;
@@ -1010,9 +1044,19 @@ function renderCompare() {
   ];
   $("#compare-why").innerHTML = `<h3>Five reasons the judges disagree</h3>
     <div class="tiles">${tiles.map(([icon, t, d]) => `<div class="tile"><span class="tile-icon">${icon}</span><b>${t}</b><p>${d}</p></div>`).join("")}</div>
-    <p class="muted small">Click a country to play your house there. Labels are provisional: one simplified shared calculation, not an official certificate. Every value carries a quality flag in Result → Expert view.</p>`;
+    <p class="muted small">${tw("Click")} a country to play your house there. Labels are provisional: one simplified shared calculation, not an official certificate. Every value carries a quality flag in Result → Expert view.</p>`;
 }
 
 // ---------- Start ----------
 if (import.meta.env.DEV) (window as unknown as Record<string, unknown>).__lx = { house, get view() { return view; }, evaluate, get sub() { return sub; } };
+{
+  const sel = $<HTMLSelectElement>("#country-list");
+  const list = INDEX.filter((e) => e.available).sort((a, b) => a.name.localeCompare(b.name));
+  for (const e of list) sel.add(new Option(e.name, e.id));
+  sel.onchange = () => {
+    const e = list.find((x) => x.id === sel.value);
+    sel.value = "";
+    if (e) pickCountry([e]);
+  };
+}
 drawMap($("#map"), $("#map-tip"), pickCountry).catch((e) => ($("#map").textContent = `Map failed to load: ${e}`));

@@ -156,7 +156,8 @@ export class HouseView {
     // Clicks (not drags: a drag turns the view) place corner points or windows.
     el.addEventListener("pointerdown", (e) => (this.downAt = [e.clientX, e.clientY]));
     el.addEventListener("pointerup", (e) => {
-      if (e.button !== 0 || !this.downAt || Math.hypot(e.clientX - this.downAt[0], e.clientY - this.downAt[1]) > 6) return;
+      const tol = e.pointerType === "touch" || e.pointerType === "pen" ? 14 : 6;
+      if (e.button !== 0 || !this.downAt || Math.hypot(e.clientX - this.downAt[0], e.clientY - this.downAt[1]) > tol) return;
       if (this.tool === "window") {
         const hit = this.faceAt(e);
         if (hit) this.onFace?.(hit.face, hit.existing);

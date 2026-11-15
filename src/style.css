@@ -423,3 +423,102 @@ footer { display: none; }
 .uw b { font: 600 26px var(--font-head); }
 .uw span { color: var(--muted); font-size: 12px; }
 .opt small sub, .info sub { font-size: 0.75em; }
+
+/* ---------- v5: view buttons, country list, phones ---------- */
+.view-ctl { position: absolute; right: 12px; bottom: 12px; z-index: 2; }
+.view-ctl button { min-width: 38px; font-size: 16px; }
+
+.hud { max-width: calc(100% - 210px); }
+.stage.with-xsec .view-ctl { right: 384px; bottom: auto; top: 60px; }
+.country-list select { font: 500 14px var(--font-body); height: 38px; border: 2px solid var(--ink); border-radius: 8px; padding: 0 8px; background: #fff; }
+#shape-finish { display: none; }
+.stage-ui:has([data-tool="corners"].on) #shape-finish { display: block; }
+@media (hover: none) and (pointer: coarse) {
+  .seg button, .btn, .pills button, .ministeps button, .substeps button { touch-action: manipulation; }
+  .opt:hover { border-color: var(--line); }
+  .opt.on:hover { border-color: var(--ink); }
+}
+
+@media (max-width: 700px), (max-height: 500px) and (orientation: landscape) {
+  body { font-size: 14px; }
+  h1 { font-size: 22px; }
+  select, input { font-size: 16px !important; } /* iOS zooms in on smaller form text */
+  .top { padding: 8px 12px; padding-top: max(8px, env(safe-area-inset-top)); gap: 8px; }
+  .brand { font-size: 18px; }
+  .brand small { display: none; }
+  .logo { width: 22px; height: 22px; }
+  .btn { height: 40px; padding: 0 12px; }
+
+  /* Pick: map on top, text below; the page area scrolls as one. */
+  #pick { display: flex; flex-direction: column; overflow: auto; }
+  #pick .map-wrap { flex: none; height: 46vh; height: 46dvh; padding: 4px; }
+  #pick .panel { flex: none; overflow: visible; padding: 16px 16px max(16px, env(safe-area-inset-bottom)); border-top: 3px solid var(--line); }
+
+  /* Start */
+  .start-wrap { padding: 16px 12px 24px; gap: 14px; }
+  .start-card { padding: 14px; }
+  .explain-side { padding: 12px; gap: 10px; }
+  .explain-icon { font-size: 26px; }
+  .cls { min-width: 48px; height: 44px; }
+
+  /* Build: 3D view on top, the step panel below. */
+  #build { grid-template-columns: 1fr; grid-template-rows: minmax(230px, 42%) minmax(0, 1fr); }
+  .stage { height: auto; }
+  .stage-ui { top: 6px; left: 0; right: 0; padding: 2px 8px 6px; flex-wrap: nowrap; overflow-x: auto; gap: 6px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .stage-ui::-webkit-scrollbar { display: none; }
+  .stage-ui > .seg { flex: none; }
+  .seg button { height: 34px; padding: 0 10px; font-size: 12px; white-space: nowrap; }
+  .seg-label { font-size: 11px; padding: 0 8px; }
+  .view-ctl { right: 8px; bottom: 8px; flex-direction: column; }
+  .view-ctl button { height: 34px; min-width: 36px; }
+  .view-ctl button + button { border-left: 0; border-top: 2px solid var(--ink); }
+  .stage-hint { top: 52px; bottom: auto; left: 8px; right: 56px; max-width: none; font-size: 12px; padding: 6px 10px; }
+  .hud { max-width: none; left: 8px; right: 56px; bottom: 8px; padding: 4px 8px; font-size: 11px; gap: 10px; flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+  .hud::-webkit-scrollbar { display: none; }
+  .hud b { font-size: 12px; }
+  .hud .muted.small { display: none; }
+
+  /* The panel scrolls as one; step tabs stay on top and Back/Next at the bottom. */
+  .side { overflow: auto; overscroll-behavior: contain; }
+  #step-body { flex: none; overflow: visible; min-height: 0; }
+  .label-card { padding: 8px 12px; gap: 6px; }
+  .sb-top select { height: 34px; }
+  .sb-main { gap: 10px; }
+  .sb-class { width: 48px; height: 48px; font-size: 19px; border-radius: 11px; }
+  .sb-num b { font-size: 24px; }
+  .sb-what { font-size: 12px; }
+  .ladder { height: 26px; }
+  .ladder i { height: 16px; line-height: 16px; font-size: 9px; }
+  .ladder i.me { height: 24px; line-height: 24px; font-size: 11px; }
+  .substeps { position: sticky; top: 0; z-index: 4; background: var(--card); flex-wrap: nowrap; overflow-x: auto; padding: 8px 12px; scrollbar-width: none; }
+  .substeps::-webkit-scrollbar { display: none; }
+  .substeps li { flex: none; }
+  .substeps button { padding: 6px 10px 6px 6px; }
+  .tab-body { padding: 12px; gap: 12px; }
+  .wizard-nav { position: sticky; bottom: 0; z-index: 4; padding: 8px 12px; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+  .wizard-nav .btn { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .xsec { margin: 10px 12px 0; border-bottom-width: 5px; }
+  .side .xsec { position: static; width: auto; max-height: none; overflow: visible; }
+  .layers { columns: 1; }
+  .cards { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+  .cards.wide { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .palette.four { grid-template-columns: repeat(2, 1fr); }
+  .win-front { width: 72px; height: 72px; }
+
+  /* Compare */
+  #compare { padding: 16px 12px max(24px, env(safe-area-inset-bottom)); }
+  .compare-grid { grid-template-columns: 1fr; }
+  .hero-stat { padding: 10px 12px; }
+  .hero-stat > b { font-size: 28px; }
+  .tiles { grid-template-columns: 1fr; }
+}
+
+/* Phone held sideways: the 3D view and the panel side by side. */
+@media (max-height: 500px) and (orientation: landscape) {
+  #build { grid-template-columns: minmax(0, 1fr) min(380px, 48%); grid-template-rows: minmax(0, 1fr); }
+  #build .side { border-top: 0; border-left: 3px solid var(--line); }
+  #pick { display: grid; grid-template-columns: minmax(0, 1fr) min(340px, 45%); grid-template-rows: minmax(0, 1fr); overflow: hidden; }
+  #pick .map-wrap { height: 100%; }
+  #pick .panel { overflow: auto; border-top: 0; border-left: 3px solid var(--line); }
+  .top { padding-top: 6px; padding-bottom: 6px; }
+}
