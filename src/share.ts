@@ -56,11 +56,41 @@ const loadImage = (src: string) =>
     img.src = src;
   });
 
-const shortName = (name: string) => name.replace(/^Belgium\s*[-–(]\s*(.*?)\)?$/, "$1 (BE)");
+/** The look of the bottom half of the share image. */
+export type ShareStyle = "tiers" | "shapes" | "wall";
+export const SHARE_STYLES: Record<ShareStyle, string> = { tiers: "Tier list", shapes: "Country shapes", wall: "Cube wall" };
 
-/** Draws a 1080 × 1350 (4:5) card: the house and its label here, three numbers, and a map of Europe coloured by class. */
-export async function shareImage(snapshot: string, mine: CountryResult, all: CountryResult[]): Promise<Blob> {
+/** Country outlines in map units, keyed by map id; loaded once. Far islands (Canaries, Azores) are left out. */
+let outlines: Promise<Map<string, number[][][]>> | null = null;
+function loadOutlines() {
+  outlines ??= fetch(mapUrl)
+    .then((res) => res.json())
+    .then((gj) => {
+      const out = new Map<string, number[][][]>();
+      for (const ft of gj.features) {
+        const polys: number[][][][] = ft.geometry.type === "Polygon" ? [ft.geometry.coordinates] : ft.geometry.coordinates;
+        const rings: number[][][] = [];
+        for (const poly of polys) {
+          const ring = poly[0];
+          const lon = ring.reduce((s, p) => s + p[0], 0) / ring.length, lat = ring.reduce((s, p) => s + p[1], 0) / ring.length;
+          if (lon < -11 || lon > 34 || lat < 34.5) continue;
+          rings.push(ring.map(([x, y]) => project(x, y)));
+        }
+        out.set(ft.properties.id, rings);
+      }
+      return out;
+    })
+    .catch(() => new Map());
+  return outlines;
+}
+
+const shortName = (name: string) => name.replace(/^Belgium\s*[-–(]\s*(.*?)\)?$/, "$1 (BE)");
+const tileName = (r: CountryResult) => ({ "BE-WAL": "Wallonia", "BE-BRU": "Brussels" })[r.country.id] ?? r.country.name;
+
+/** Draws a 1080 × 1350 (4:5) card: the house and its label here, then the same house in every scheme. */
+export async function shareImage(snapshot: string, mine: CountryResult, all: CountryResult[], style: ShareStyle = "tiers"): Promise<Blob> {
   await document.fonts.ready;
+  const shapes = await loadOutlines();
   const W = 1080, H = 1350;
   const canvas = document.createElement("canvas");
   canvas.width = W;
@@ -93,12 +123,12 @@ export async function shareImage(snapshot: string, mine: CountryResult, all: Cou
     g.roundRect(x, y, w, h, r);
     g.stroke();
   };
-  /** Class text that shrinks to fit its box. */
   /** Dark text on light classes (yellow), white on the rest. */
   const light = (hex: string) => {
     const n = parseInt(hex.replace("#", ""), 16);
     return (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255 > 0.72;
   };
+  /** Class text that shrinks to fit its box. */
   const classText = (cls: string, cx: number, cy: number, maxW: number, size: number, bg = "#000000") => {
     let s = size;
     g.font = head(s);
@@ -113,11 +143,50 @@ export async function shareImage(snapshot: string, mine: CountryResult, all: Cou
     g.textAlign = "left";
     g.textBaseline = "alphabetic";
   };
+  const centred = (text: string, cx: number, y: number, font: string, color: string, maxW: number) => {
+    g.font = font;
+    let t = text;
+    while (g.measureText(t).width > maxW && t.length > 3) t = t.slice(0, -2) + "…";
+    g.fillStyle = color;
+    g.textAlign = "center";
+    g.fillText(t, cx, y);
+    g.textAlign = "left";
+  };
+  /** A country's outline filled with its class colour, fitted into a box. */
+  const silhouette = (r: CountryResult, x: number, y: number, w: number, h: number, col: string) => {
+    const id = (r.country as unknown as { map_id?: string }).map_id ?? r.country.id;
+    const rings = shapes.get(id);
+    if (!rings?.length) return false;
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (const ring of rings) for (const [px, py] of ring) (x0 = Math.min(x0, px)), (y0 = Math.min(y0, py)), (x1 = Math.max(x1, px)), (y1 = Math.max(y1, py));
+    const k = Math.min(w / (x1 - x0), h / (y1 - y0));
+    const ox = x + (w - (x1 - x0) * k) / 2 - x0 * k, oy = y + (h - (y1 - y0) * k) / 2 - y0 * k;
+    const path = new Path2D();
+    for (const ring of rings) {
+      ring.forEach(([px, py], i) => (i ? path.lineTo(ox + px * k, oy + py * k) : path.moveTo(ox + px * k, oy + py * k)));
+      path.closePath();
+    }
+    g.save();
+    g.translate(0, 4);
+    g.fillStyle = ink;
+    g.fill(path);
+    g.restore();
+    g.fillStyle = col;
+    g.fill(path);
+    g.lineJoin = "round";
+    g.strokeStyle = ink;
+    g.lineWidth = 3;
+    g.stroke(path);
+    return true;
+  };
+  const rel = (r: CountryResult) => r.label.index / Math.max(1, r.label.classes.length - 1);
+  const colOf = (r: CountryResult) => classColor(r.label.index, r.label.classes.length);
+  const fmt0 = (x: number, d = 0) => x.toLocaleString("en-GB", { maximumFractionDigits: d, minimumFractionDigits: d });
 
   g.fillStyle = "#eef5e6";
   g.fillRect(0, 0, W, H);
 
-  // Title
+  // Header: title, the score here and three numbers on one line, the class as a big cube
   const n = mine.label.classes.length;
   const bs = 150, bx = W - 60 - bs, by = 44;
   g.fillStyle = ink;
@@ -129,17 +198,15 @@ export async function shareImage(snapshot: string, mine: CountryResult, all: Cou
   g.fillText("My house across Europe", 60, 160);
   const v = mine.indicator.value;
   const unit = mine.indicator.unit.replace(/m2/g, "m²").replace(/[.·]?(a|yr)$/, "·yr");
-  g.font = body(28, 600);
+  g.font = body(26, 600);
   g.fillStyle = muted;
-  g.fillText(`${shortName(mine.country.name)}: ${v.toLocaleString("en-GB", { maximumFractionDigits: Math.abs(v) < 10 ? 1 : 0 })} ${unit}`, 60, 206);
-
-  // The label here, as a big cube in the header (never over the house)
+  g.fillText(`${shortName(mine.country.name)}: ${fmt0(v, Math.abs(v) < 10 ? 1 : 0)} ${unit}  ·  ${fmt0(mine.co2 / 1000, 1)} t CO₂  ·  €${fmt0(Math.abs(mine.cost))} ${mine.cost >= 0 ? "bills" : "earned"} a year`, 60, 204);
   const mineCol = classColor(mine.label.index, n);
   cube(bx, by, bs, bs, 24, mineCol);
   classText(mine.label.cls, bx + bs / 2 - 3, by + bs / 2 - 2, bs - 26, 72, mineCol);
 
   // The house on a sky card
-  const cy = 236, ch = 340;
+  const cy = 236, ch = 420;
   const sky = g.createLinearGradient(0, cy, 0, cy + ch);
   sky.addColorStop(0, "#cfe7f7");
   sky.addColorStop(1, "#eaf4fb");
@@ -156,102 +223,73 @@ export async function shareImage(snapshot: string, mine: CountryResult, all: Cou
   g.drawImage(img, (W - iw) / 2, cy + (ch - ih) / 2, iw, ih);
   g.restore();
 
-  // Three numbers, as stat tiles
-  const sy = cy + ch + 30, sh = 112, gap = 24, sw = (W - 120 - 2 * gap) / 3;
-  const fmt0 = (x: number, d = 0) => x.toLocaleString("en-GB", { maximumFractionDigits: d, minimumFractionDigits: d });
-  const stats: [string, string, string][] = [
-    ["Heat need", fmt0(mine.perM2.heatNeed), "kWh per m² a year"],
-    ["CO₂", `${fmt0(mine.co2 / 1000, 1)} t`, "per year"],
-    [mine.cost >= 0 ? "Energy bills" : "Earns", `€${fmt0(Math.abs(mine.cost))}`, "per year, 2026 prices"],
-  ];
-  stats.forEach(([label, value, sub], k) => {
-    const x = 60 + k * (sw + gap);
-    cube(x, sy, sw, sh, 16, "#ffffff", 6);
-    g.fillStyle = muted;
-    g.font = body(22, 600);
-    g.fillText(label, x + 22, sy + 34);
-    g.fillStyle = ink;
-    g.font = head(44);
-    g.fillText(value, x + 22, sy + 78);
-    g.fillStyle = muted;
-    g.font = body(17);
-    g.fillText(sub, x + 22, sy + 100);
-  });
-
-  // Europe, coloured by the class this house gets in each scheme
-  const top = sy + sh + 52;
+  // The same house in every scheme
+  const top = cy + ch + 64;
   g.fillStyle = ink;
-  g.font = head(32);
+  g.font = head(34);
   g.fillText(`The same house in ${all.length} label schemes`, 60, top);
-  g.fillStyle = muted;
-  g.font = body(19);
-  g.fillText("Colour: how high the class sits on that country's own scale, green best.", 60, top + 30);
-  const mapTop = top + 48, mapH = H - 120 - mapTop, mapW = 470;
-  g.fillStyle = ink;
-  g.beginPath();
-  g.roundRect(60, mapTop + 6, mapW, mapH, 22);
-  g.fill();
-  g.fillStyle = "#dcecf7";
-  g.beginPath();
-  g.roundRect(60, mapTop, mapW, mapH, 22);
-  g.fill();
-  const byMap = new Map<string, CountryResult>();
-  for (const r of all) {
-    const id = (r.country as unknown as { map_id?: string }).map_id ?? r.country.id;
-    // Belgium has three labels on one shape: show the one you picked, else Wallonia (most of the area)
-    const prefer = id === "BE" ? (mine.country.id.startsWith("BE-") ? mine.country.id : "BE-WAL") : r.country.id;
-    if (!byMap.has(id) || r.country.id === prefer) byMap.set(id, r);
-  }
-  try {
-    const gj = await fetch(mapUrl).then((res) => res.json());
-    const [x0] = project(-11, 40), [x1] = project(32, 50), [, y0] = project(10, 70.5), [, y1] = project(25, 34.5);
-    const k = Math.min((mapW - 24) / (x1 - x0), (mapH - 24) / (y1 - y0));
-    const ox = 60 + (mapW - (x1 - x0) * k) / 2 - x0 * k, oy = mapTop + (mapH - (y1 - y0) * k) / 2 - y0 * k;
-    g.save();
-    g.beginPath();
-    g.roundRect(62, mapTop + 2, mapW - 4, mapH - 4, 20);
-    g.clip();
-    g.lineJoin = "round";
-    for (const ft of gj.features) {
-      const polys: number[][][][] = ft.geometry.type === "Polygon" ? [ft.geometry.coordinates] : ft.geometry.coordinates;
-      const path = new Path2D();
-      for (const poly of polys) for (const ring of poly) {
-        ring.forEach(([lon, lat]: number[], n: number) => {
-          const [x, y] = project(lon, lat);
-          if (n) path.lineTo(ox + x * k, oy + y * k);
-          else path.moveTo(ox + x * k, oy + y * k);
-        });
-        path.closePath();
-      }
-      const r = byMap.get(ft.properties.id);
-      g.fillStyle = r ? classColor(r.label.index, r.label.classes.length) : ft.properties.eu27 ? "#cfd3c8" : "#e8ece2";
-      g.fill(path);
-      g.strokeStyle = r ? ink : "#aab0a2";
-      g.lineWidth = r ? 2.2 : 1;
-      g.stroke(path);
-    }
-    g.restore();
-  } catch {
-    /* no map offline: the list still tells the story */
-  }
-  g.strokeStyle = ink;
-  g.lineWidth = 4;
-  g.beginPath();
-  g.roundRect(60, mapTop, mapW, mapH, 22);
-  g.stroke();
+  const areaTop = top + 26, areaBottom = H - 104;
+  const sorted = [...all].sort((a, b) => rel(a) - rel(b));
+  const isMine = (r: CountryResult) => r.country.id === mine.country.id;
 
-  // The list beside the map, best first
-  const lx = 60 + mapW + 34, rowH = Math.min(46, mapH / all.length);
-  all.forEach((r, n) => {
-    const y = mapTop + n * rowH;
-    const s = rowH - 10;
-    const col = classColor(r.label.index, r.label.classes.length);
-    cube(lx, y, s * 1.35, s, 7, col, 3);
-    classText(r.label.cls, lx + (s * 1.35) / 2 - 2, y + s / 2, s * 1.35 - 8, 20, col);
-    g.fillStyle = ink;
-    g.font = body(21, r.country.id === mine.country.id ? 700 : 500);
-    g.fillText(shortName(r.country.name), lx + s * 1.35 + 14, y + s / 2 + 7);
-  });
+  if (style === "wall") {
+    // 7 x 2 grid of cubes, best first; each cube holds the country shape and its class
+    const cols = Math.ceil(sorted.length / 2), gap = 14;
+    const tw = (W - 120 - gap * (cols - 1)) / cols, th = (areaBottom - areaTop - 30 - gap) / 2 - 26;
+    sorted.forEach((r, i) => {
+      const x = 60 + (i % cols) * (tw + gap), y = areaTop + 8 + Math.floor(i / cols) * (th + 26 + gap);
+      const col = colOf(r);
+      cube(x, y, tw, th, 14, col, isMine(r) ? 8 : 5);
+      g.save();
+      g.globalAlpha = 0.35;
+      silhouette(r, x + 10, y + 10, tw - 20, th - 20, "#ffffff");
+      g.restore();
+      classText(r.label.cls, x + tw / 2 - 2, y + th / 2, tw - 16, 40, col);
+      centred(tileName(r), x + tw / 2, y + th + 24, body(17, isMine(r) ? 700 : 500), ink, tw + gap - 2);
+    });
+    g.fillStyle = muted;
+    g.font = body(18);
+    g.fillText("Best class on its own scale  →  worst", 60, areaBottom + 8);
+  } else {
+    // Tier list: five rows, from the top of each country's scale to the bottom
+    const tiers = [
+      ["TOP", "#00a651", 0.2],
+      ["GOOD", "#8cc63f", 0.4],
+      ["MID", "#fff200", 0.6],
+      ["LOW", "#f7941d", 0.8],
+      ["BOTTOM", "#ed1c24", 1.01],
+    ] as const;
+    const all5 = tiers.map(([name, col, maxRel], t) => ({ name, col, list: sorted.filter((r) => rel(r) <= maxRel && (t === 0 || rel(r) > tiers[t - 1][2])) }));
+    const rows = all5.filter((t) => t.list.length); // empty tiers take no room
+    const rowGap = 12, rowH = Math.min(176, (areaBottom - areaTop - rowGap * (rows.length - 1)) / rows.length);
+    const labelW = 150, tileGap = 12;
+    const most = Math.max(1, ...rows.map((t) => t.list.length));
+    const tile = Math.min(rowH - 34, 130, (W - 120 - labelW - 24 - tileGap * (most - 1)) / most);
+    const used = rows.length * rowH + rowGap * (rows.length - 1);
+    rows.forEach(({ name, col, list }, t) => {
+      const y = areaTop + (areaBottom - areaTop - used) / 2 + t * (rowH + rowGap);
+      cube(60, y, labelW, rowH - 6, 12, col, 5);
+      classText(name, 60 + labelW / 2 - 2, y + (rowH - 6) / 2, labelW - 20, 30, col);
+      g.fillStyle = "rgba(35,38,47,0.06)";
+      g.beginPath();
+      g.roundRect(60 + labelW + 8, y, W - 120 - labelW - 8, rowH - 6, 12);
+      g.fill();
+      list.forEach((r, i) => {
+        const x = 60 + labelW + 20 + i * (tile + tileGap), ty = y + (rowH - 6 - tile - 22) / 2 + 2;
+        const c = colOf(r);
+        if (style === "shapes") {
+          if (!silhouette(r, x + 2, ty + 2, tile - 16, tile - 18, c)) cube(x, ty, tile - 14, tile - 16, 10, c, 4);
+          const bw = 34, bh = 26;
+          cube(x + tile - bw, ty + tile - bh - 6, bw, bh, 7, c, 3);
+          classText(r.label.cls, x + tile - bw / 2 - 1, ty + tile - bh / 2 - 6, bw - 8, 18, c);
+        } else {
+          cube(x, ty, tile, tile - 6, 12, c, isMine(r) ? 6 : 4);
+          classText(r.label.cls, x + tile / 2 - 2, ty + (tile - 6) / 2, tile - 14, 34, c);
+        }
+        centred(tileName(r), x + tile / 2, ty + tile + 18, body(15, isMine(r) ? 700 : 500), ink, tile + tileGap - 2);
+      });
+    });
+  }
 
   g.fillStyle = muted;
   g.font = body(19);
