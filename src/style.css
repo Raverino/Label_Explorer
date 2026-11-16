@@ -626,7 +626,8 @@ details.more .kv { margin-top: 6px; }
 }
 
 /* ---------- v7: disclaimer, code pop-up, ladder marker, month chart ---------- */
-.disclaimer { margin: 0; padding: 8px 12px; background: #fff3c4; border: 2px solid var(--ink); border-radius: 8px; box-shadow: inset -3px -3px 0 rgba(0, 0, 0, 0.08), 0 3px 0 var(--ink); font-size: 14px; line-height: 1.4; }
+.disclaimer { margin: 0; padding: 8px 12px; border: 2px dashed var(--line); border-radius: 8px; font-size: 13px; line-height: 1.45; color: var(--muted); }
+.disclaimer b { color: var(--ink); }
 .disclaimer b { font-weight: 700; }
 
 .hud > button.warn { font: inherit; font-size: 13px; background: #fde3e2; color: #b3261e; font-weight: 600; border: 2px solid var(--ink); border-radius: 6px; padding: 2px 8px; box-shadow: inset -2px -2px 0 rgba(0, 0, 0, 0.1), 0 2px 0 var(--ink); white-space: nowrap; cursor: pointer; pointer-events: auto; }
