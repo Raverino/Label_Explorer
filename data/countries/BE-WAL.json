@@ -13,7 +13,9 @@
   "code": "Ach",
   "name": "heated floor area",
   "basis": "gross_external",
-  "status": "unverified"
+  "status": "official",
+  "source": "https://energie.wallonie.be/files/PEB/Pour%20les%20professionnels/Outils/La%20r%c3%a9glementation%20wallonne%20-%20PEB/Exigences%20PEB/R%c3%a9gl.%20PEB%20apd%2001.01.26/AGW%20PEB%202026_Annexe%20A1%20(PER).pdf",
+  "note": "Ach: sum of floor areas inside the protected volume measured between the outer faces of the external walls (Annexe A1, definitions)"
  },
  "label": {
   "version": "Wallonia PEB",
@@ -117,7 +119,6 @@
  },
  "gaps": [
   "Official band table from SPW",
-  "Floor-area definition",
   "CO2 column unit basis"
  ]
 }

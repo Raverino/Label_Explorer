@@ -70,5 +70,42 @@
   "status": "official (setpoint) / default (gains, hot water)",
   "source": "https://document.environnement.brussels/opac_css/elecfile/IF_NRJ_ResultatCertificatPEB_FR",
   "note": "Brussels certificate: 18 C mean in all rooms, 365 days; hot water scales with home size (about 150 L/day for 170 m2)"
+ },
+ "HR": {
+  "setpoint_C": 20,
+  "internal_gains_W_m2": 5,
+  "air_change_h": 0.5,
+  "status": "official",
+  "source": "https://mpgi.gov.hr/UserDocsImages/dokumenti/EnergetskaUcinkovitost/Algoritam_HRN_EN_13790_%202021.pdf",
+  "note": "Algoritam HRN EN 13790 (2021): Tablica 1.1 family houses 20 C heating; 1.3.3.1 internal gains 5 W/m2 of A_K for residential; minimum n_inf + n_win 0.5 /h without mechanical ventilation (read 2026-11-16)"
+ },
+ "BE-WAL": {
+  "setpoint_C": 18,
+  "internal_gains_by_volume": {
+   "V0_m3": 192,
+   "small": [
+    1.41,
+    78
+   ],
+   "large": [
+    0.67,
+    220
+   ]
+  },
+  "dhw_by_volume": {
+   "V0_m3": 192,
+   "base_W": 80,
+   "per_m3_W": 0.275
+  },
+  "status": "official",
+  "source": "https://energie.wallonie.be/files/PEB/Pour%20les%20professionnels/Outils/La%20r%c3%a9glementation%20wallonne%20-%20PEB/Exigences%20PEB/R%c3%a9gl.%20PEB%20apd%2001.01.26/AGW%20PEB%202026_Annexe%20A1%20(PER).pdf",
+  "note": "AGW PEB 2026 Annexe A1 (PER): 18 C constant (5.x); internal gains 7.9.2 eq. 50: 0.67 V + 220 W (V > 192 m3), 1.41 V + 78 W below; hot water net need eq. 18: one bath (64 + 0.220 (V-192) W) + one kitchen sink (16 + 0.055 (V-192) W), minimum at 192 m3; V = protected volume. Ventilation equations are images: default kept (read 2026-11-16)"
+ },
+ "ES": {
+  "setpoint_C": 19,
+  "internal_gains_W_m2": 4.81,
+  "status": "official (setpoint, gains) / default (hot water)",
+  "source": "https://www.codigotecnico.org/pdf/Documentos/HE/DccHE.pdf",
+  "note": "CTE DB-HE Anejo D: heating 20 C 7:00-23:00 and 17 C at night (time average 19 C); tabla b: sensible occupancy + lighting + equipment, weekly average 4.81 W/m2. Hot water is 28 L/person/day at 60 C with persons by bedrooms (Anejo F) - the app has no bedrooms, so the default per m2 is kept (read 2026-11-16)"
  }
 }

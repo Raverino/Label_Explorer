@@ -100,6 +100,10 @@ interface Conv {
   qVent?: number;
   /** hot-water need cap per dwelling, kWh/yr (FI) */
   dhwCap?: number;
+  /** internal gains in W from the protected volume, replaces gains x area (BE-WAL) */
+  gainsW?: (V: number) => number;
+  /** hot-water need in W (average) from the protected volume (BE-WAL) */
+  dhwW?: (V: number) => number;
   status: string;
 }
 
@@ -120,6 +124,12 @@ function conventions(id: string): Conv {
     ach: num(c.air_change_h) ?? d.air_change_h,
     qVent: num(c.vent_dm3_s_m2),
     dhwCap: num(c.dhw_max_kWh_per_dwelling),
+    gainsW: c.internal_gains_by_volume ? (V: number) => {
+      const g = c.internal_gains_by_volume;
+      const [k, b] = V > g.V0_m3 ? g.large : g.small;
+      return k * V + b;
+    } : undefined,
+    dhwW: c.dhw_by_volume ? (V: number) => c.dhw_by_volume.base_W + c.dhw_by_volume.per_m3_W * Math.max(0, V - c.dhw_by_volume.V0_m3) : undefined,
     status: c.status ?? d.status,
   };
 }
@@ -260,7 +270,7 @@ export function heatBalance(h: House, cl: Climate, conv: Conv) {
   const monthlyCool: number[] = [];
   for (let m = 0; m < 12; m++) {
     const hours = DAYS[m] * 24;
-    const internal = (conv.gains * g.usable * hours) / 1000;
+    const internal = ((conv.gainsW ? conv.gainsW(g.volume) : conv.gains * g.usable) * hours) / 1000;
     const sky = (skyW * hours) / 1000;
     let opaque = K.opaque_absorptance * roofRseUA * cl.irr_kWh_m2.H[m] * (h.roof === "gable" ? K.pitched_roof_irr_factor : 1);
     for (const f of FACADES) opaque += K.opaque_absorptance * wallRseUA(f) * cl.irr_kWh_m2[irrKey[f]][m];
@@ -305,7 +315,7 @@ export function evaluate(h: House, countryId: string): CountryResult {
   const { g } = hb;
   const heatNeed = hb.monthly.reduce((s, v) => s + v, 0);
   const coolNeed = hb.monthlyCool.reduce((s, v) => s + v, 0);
-  const dhwNeed = Math.min(conv.dhw * g.usable, conv.dhwCap ?? Infinity);
+  const dhwNeed = Math.min(conv.dhwW ? (conv.dhwW(g.volume) * 8760) / 1000 : conv.dhw * g.usable, conv.dhwCap ?? Infinity);
 
   // Solar thermal covers part of the hot water first.
   const st = SYSTEMS.solar_thermal;

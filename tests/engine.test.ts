@@ -3,7 +3,7 @@
 // "BENG voorbeeldconcepten woningbouw", bijlage 1 and 3).
 
 import { describe, expect, it } from "vitest";
-import { AIRTIGHTNESS, CLIMATES, COUNTRIES, MATERIALS, SURFACE_R } from "../src/data";
+import { AIRTIGHTNESS, CLIMATES, CONVENTIONS, COUNTRIES, MATERIALS, SURFACE_R } from "../src/data";
 import { evaluate, evaluateAll, groundLoss, heatBalance } from "../src/engine";
 import { House, Layered, fillWindows, geometry, key, layerU, starterHouse } from "../src/house";
 import { classify } from "../src/labels";
@@ -158,5 +158,22 @@ describe("Validation: RVO reference house L (NTA 8800 results)", () => {
     const ep2 = r.indicator.value;
     console.log(`BENG 2 heat pump + PV: ours ${ep2.toFixed(1)} vs NTA 8800 29.5`, JSON.stringify({ heat: r.heatNeed, dhw: r.dhwNeed, del: r.delivered, pv: r.pv, area: r.area }));
     expect(Math.abs(ep2 - 29.5) / 29.5).toBeLessThan(0.35);
+  });
+});
+
+describe("Official usage conventions", () => {
+  it("Wallonia: internal gains and hot water follow the PER volume formulas, continuous at 192 m3", () => {
+    const g = CONVENTIONS["BE-WAL"].internal_gains_by_volume;
+    expect(g.small[0] * 192 + g.small[1]).toBeCloseTo(g.large[0] * 192 + g.large[1], 0);
+    const h = starterHouse();
+    const r = evaluate(h, "BE-WAL");
+    const V = geometry(h).volume;
+    expect(r.dhwNeed).toBeCloseTo(((80 + 0.275 * Math.max(0, V - 192)) * 8760) / 1000, 3);
+  });
+  it("Croatia: 5 W/m2 of gains lower the heat need compared with the 3 W/m2 default", () => {
+    const h = starterHouse();
+    const hr = heatBalance(h, CLIMATES[COUNTRIES.HR.climate[0]], { setpoint: 20, gains: 5, dhw: 0, ach: 0.5, status: "" });
+    const def = heatBalance(h, CLIMATES[COUNTRIES.HR.climate[0]], { setpoint: 20, gains: 3, dhw: 0, ach: 0.5, status: "" });
+    expect(hr.monthly.reduce((s, v) => s + v, 0)).toBeLessThan(def.monthly.reduce((s, v) => s + v, 0));
   });
 });

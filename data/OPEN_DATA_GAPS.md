@@ -1,4 +1,4 @@
-# Open data gaps (updated 2026-11-12)
+# Open data gaps (updated 2026-11-16)
 
 What the database still misses, split into what needs **you** (paid standards, professional tools, or Dutch practice knowledge) and what **I** can still look up. The ones marked ★ change labels the most.
 
@@ -37,6 +37,9 @@ Every label scale, factor table and usage convention was checked against the leg
 | EE | Weights 2.0 / 0.9 / 0.65 / 1.0 and biomass 0.65 (all `official` now); the 2026 study proposes electricity 1.8 | Reg. 63 § 9 (Estlex consolidation); Climate Ministry study May 2026 |
 | FI | **New conventions**: 21 °C, fresh air 0.4 dm³/s·m², gains 6/3/2 W/m² × 0.1/0.6/0.6, hot water **35 kWh/m²a** (max 4,200 per home) — the old stored 600 L/m²a was wrong | Decree 1010/2017 §§ 10-12 |
 | HR | Full class table A+..G (D-G were secondary) | NN 88/2017 Prilog 1 Tablica 1 |
+| HR (2026-11-16) | **Official conventions**: 20 °C, gains 5 W/m² A_K, minimum 0.5 air changes/h | Algoritam HRN EN 13790 (2021) Tablica 1.1, 1.3.3.1 |
+| BE-WAL (2026-11-16) | **Official conventions**: 18 °C, gains 0.67 V + 220 W, hot water 64 + 16 W plus 0.275 W per m³ above 192 m³; floor area Ach on outer dimensions now official | AGW PEB 2026 Annexe A1 (PER) 7.9.2, eq. 18, definitions |
+| ES (2026-11-16) | **Official conventions**: 20 °C day / 17 °C night (19 °C average), gains 4.81 W/m² weekly average; hot water still default (28 L/person/day needs bedrooms) | CTE DB-HE Anejo D, Anejo F |
 | HU | Class table (% of requirement) now `official`; added oil, wood and district-heat factors | 176/2008 Korm. rendelet 3. melléklet; 9/2023 ÉKM 7. melléklet |
 | BE-BRU | Main bands official; A sub-levels by the thirds rule (C- = 133-150 confirmed); setpoint **18 °C** mean | Bruxelles Environnement pages |
 | ES | Envelope limits zone D now `official` (0.41 / 0.35 / 0.65 / 1.8) | CTE DB-HE Tabla 3.1.1.a-HE1 |
@@ -80,3 +83,8 @@ Values whose confidence is still not high. None of them blocks the app: the engi
 - Spain: zone D3 (Madrid) only; Austria: Vienna only; Croatia: both reference stations.
 - Catalogue values are generic typical values, not products. BCRG product declarations can replace them later.
 - Construction cost is in game "coins", not euros.
+
+## E. Still open after 2026-11-16
+- SI conventions: in TSG-1-004:2022 tables 6.1.3 / 7.1.1 / 8.2.2 (official PDF over 10 MB; not read yet).
+- BE-WAL hygienic ventilation (eq. 42-44 are images in Annexe A1) and the official class table (in the Moniteur belge annex).
+- HR primary-energy scale (Tablica 2 image), HU and EE conventions (in linked annex PDFs / Riigi Teataja).
