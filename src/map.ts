@@ -7,7 +7,7 @@ const R = Math.PI / 180;
 const LON0 = 12 * R, LAT0 = 52 * R;
 
 /** Lambert azimuthal equal-area (the EU's LAEA) centred on central Europe, in arbitrary units. */
-function project(lon: number, lat: number): [number, number] {
+export function project(lon: number, lat: number): [number, number] {
   const l = lon * R, p = lat * R;
   const k = Math.sqrt(2 / (1 + Math.sin(LAT0) * Math.sin(p) + Math.cos(LAT0) * Math.cos(p) * Math.cos(l - LON0)));
   const x = k * Math.cos(p) * Math.sin(l - LON0);
