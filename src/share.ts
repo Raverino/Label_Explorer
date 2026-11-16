@@ -116,14 +116,28 @@ export async function shareImage(snapshot: string, mine: CountryResult, all: Cou
   g.fillRect(0, 0, W, H);
 
   // Title
+  const n = mine.label.classes.length;
+  const bs = 150, bx = W - 60 - bs, by = 44;
   g.fillStyle = ink;
   g.font = head(30);
   g.fillText("LABEL EXPLORER", 60, 88);
-  g.font = head(68);
+  let ts = 68;
+  g.font = head(ts);
+  while (g.measureText("My house across Europe").width > bx - 90 && ts > 40) g.font = head(--ts);
   g.fillText("My house across Europe", 60, 160);
+  const v = mine.indicator.value;
+  const unit = mine.indicator.unit.replace(/m2/g, "m²").replace(/[.·]?(a|yr)$/, "·yr");
+  g.font = body(28, 600);
+  g.fillStyle = muted;
+  g.fillText(`${shortName(mine.country.name)}: ${v.toLocaleString("en-GB", { maximumFractionDigits: Math.abs(v) < 10 ? 1 : 0 })} ${unit}`, 60, 206);
 
-  // The house on a sky card, with its label here in the corner
-  const cy = 196, ch = 520;
+  // The label here, as a big cube in the header (never over the house)
+  const mineCol = classColor(mine.label.index, n);
+  cube(bx, by, bs, bs, 24, mineCol);
+  classText(mine.label.cls, bx + bs / 2 - 3, by + bs / 2 - 2, bs - 26, 72, mineCol);
+
+  // The house on a sky card
+  const cy = 236, ch = 480;
   const sky = g.createLinearGradient(0, cy, 0, cy + ch);
   sky.addColorStop(0, "#cfe7f7");
   sky.addColorStop(1, "#eaf4fb");
@@ -139,24 +153,6 @@ export async function shareImage(snapshot: string, mine: CountryResult, all: Cou
   const iw = img.width * scale, ih = img.height * scale;
   g.drawImage(img, (W - iw) / 2, cy + (ch - ih) / 2, iw, ih);
   g.restore();
-
-  const n = mine.label.classes.length;
-  const bx = 90, by = cy + 26, bs = 130;
-  const mineCol = classColor(mine.label.index, n);
-  cube(bx, by, bs, bs, 22, mineCol);
-  classText(mine.label.cls, bx + bs / 2 - 3, by + bs / 2 - 2, bs - 24, 64, mineCol);
-  g.fillStyle = "rgba(255,255,255,0.92)";
-  g.beginPath();
-  g.roundRect(bx + bs + 18, by + 18, 430, 96, 16);
-  g.fill();
-  g.fillStyle = ink;
-  g.font = head(36);
-  g.fillText(shortName(mine.country.name), bx + bs + 36, by + 60);
-  const v = mine.indicator.value;
-  g.font = body(24, 600);
-  g.fillStyle = muted;
-  const unit = mine.indicator.unit.replace(/m2/g, "m²").replace(/[.·]?(a|yr)$/, "·yr");
-  g.fillText(`${v.toLocaleString("en-GB", { maximumFractionDigits: Math.abs(v) < 10 ? 1 : 0 })} ${unit}`, bx + bs + 36, by + 96);
 
   // Every country: a cube with the class, best first
   g.fillStyle = ink;
@@ -177,7 +173,7 @@ export async function shareImage(snapshot: string, mine: CountryResult, all: Cou
 
   g.fillStyle = muted;
   g.font = body(19);
-  g.fillText("Provisional labels: one simplified shared calculation, not an official certificate.", 60, H - 62);
+  g.fillText("Not an official certificate: estimates from one simplified shared calculation.", 60, H - 62);
   g.fillStyle = ink;
   g.font = body(26, 700);
   g.fillText(`Build yours: ${APP_URL}`, 60, H - 26);

@@ -1,5 +1,5 @@
 import "./style.css";
-import { AIRTIGHTNESS, BUILDING_CODE, CONSTRUCTIONS, COUNTRIES, DOORS, FRAMES, GLAZING, INDEX, INSULATION_STEPS, IndexEntry, MATERIALS, SYSTEMS, THERMAL_BRIDGES } from "./data";
+import { AIRTIGHTNESS, BUILDING_CODE, CONSTRUCTIONS, CONVENTIONS, COUNTRIES, DOORS, FRAMES, GLAZING, INDEX, INSULATION_STEPS, IndexEntry, MATERIALS, SYSTEMS, THERMAL_BRIDGES } from "./data";
 import { ASSUMPTIONS, CountryResult, evaluate, evaluateAll } from "./engine";
 import { houseForClass } from "./generator";
 import { CUSTOM_LIMITS, FACADES, Facade, House, Layered, WINDOW_SIZES, WindowSize, faceKey, fillWindows, geometry, key, layerU, maxPanels, placeWindow, starterHouse, validWindows, windowDims, windowProps, windowU } from "./house";
@@ -589,10 +589,10 @@ function layeredEditor(elem: "wall" | "roof" | "floor", l: Layered) {
 }
 
 function renderQuality(body: HTMLElement) {
-  const g = group("a · Airtightness", "n50: air changes per hour at 50 Pa");
+  const g = group("a · Airtightness", "qv10: air leaking in at 10 Pa, in dm³/s per m² floor (lower is tighter)");
   g.appendChild(
     cards(
-      Object.entries(AIRTIGHTNESS).map(([k, v]) => ({ key: k, art: airSVG(v.n50), name: v.name, meta: `n50 ${v.n50}/h` })),
+      Object.entries(AIRTIGHTNESS).map(([k, v]) => ({ key: k, art: airSVG(v.n50), name: v.name, meta: `qv10 ≈ ${fmt(qv10(v.n50), 2)} · n50 ${v.n50}/h` })),
       house.airtightness,
       () => "Cold air leaking in through gaps around windows, sockets and joints. Builders test it by blowing air into the house (a blower-door test). Fewer leaks, less heat lost.",
       (k) => ((house.airtightness = k), update()),
@@ -641,7 +641,7 @@ function renderXsec() {
   if (element === "quality") {
     const a = AIRTIGHTNESS[house.airtightness], t = THERMAL_BRIDGES[house.thermalBridges];
     box.innerHTML = `<h3>Airtightness and joints</h3>
-      <div class="xsec-pair"><div>${airSVG(a.n50)}<b>${a.name}</b><small>n50 ${a.n50} /h</small></div><div>${bridgeSVG(t.dU)}<b>${t.name}</b><small>+${t.dU} W/m²K</small></div></div>`;
+      <div class="xsec-pair"><div>${airSVG(a.n50)}<b>${a.name}</b><small>qv10 ≈ ${fmt(qv10(a.n50), 2)} dm³/s·m²</small></div><div>${bridgeSVG(t.dU)}<b>${t.name}</b><small>+${t.dU} W/m²K</small></div></div>`;
     return;
   }
   const l = layerOf(house, element);
@@ -651,6 +651,15 @@ function renderXsec() {
     ${sectionSVG(l, element)}${sectionLegend(l)}
     <div class="uval">U <b>${fmt(r.U, 2)}</b> W/m²K · Rc <b>${fmt(r.R, 1)}</b> m²K/W ${codePill(element, r.U, r.R)}</div>
     <p class="muted xsmall">U: heat leaking through 1 m² per degree of difference. Lower is better.</p>`;
+}
+
+/**
+ * Air leakage at 10 Pa per m² floor (qv10, dm³/s·m², as on Dutch and Belgian reports) from the
+ * blower-door n50 of this house: q50 = n50 · V, scaled to 10 Pa with flow exponent 0.67.
+ */
+function qv10(n50: number) {
+  const g = geometry(house);
+  return g.usable > 0 ? (n50 * g.airVolume * Math.pow(10 / 50, 0.67)) / 3.6 / g.usable : 0;
 }
 
 function airSVG(n50: number) {
@@ -897,8 +906,40 @@ function renderHud(r: CountryResult, systemsShown: boolean) {
     <span>Heat need <b>${fmt(r.perM2.heatNeed)}</b> kWh/m²</span>
     <span>CO₂ <b>${fmt(r.co2 / 1000, 1)} t</b>/yr</span>
     <span>${r.cost >= 0 ? `Bills <b>€${fmt(r.cost)}</b>/yr` : `Earns <b>€${fmt(-r.cost)}</b>/yr`}</span>
-    ${fails ? `<span class="warn">⚠ ${fails} below code</span>` : ""}
+    ${fails ? `<button class="warn" id="code-warn" aria-expanded="false">⚠ ${fails} below code ▾</button>` : ""}
     ${systemsShown ? "" : `<span class="soft">Gas boiler assumed until you choose installations</span>`}`;
+  document.getElementById("code-pop")?.remove();
+  const warn = document.getElementById("code-warn");
+  if (warn) warn.onclick = () => toggleCodePop(r, warn);
+}
+
+/** Which step fixes a building-code item. */
+function codeFix(element: string): { label: string; go: () => void } {
+  const cons = (k: (typeof CONS_STEPS)[number]) => () => (setSub("construction"), setElement(k));
+  if (/wall|envelope/i.test(element)) return { label: "Walls", go: cons("wall") };
+  if (/roof/i.test(element)) return { label: consName("roof"), go: cons("roof") };
+  if (/floor/i.test(element)) return { label: "Ground floor", go: cons("floor") };
+  return { label: "Windows", go: () => setSub("windows") };
+}
+
+function toggleCodePop(r: CountryResult, btn: HTMLElement) {
+  const old = document.getElementById("code-pop");
+  if (old) {
+    old.remove();
+    btn.setAttribute("aria-expanded", "false");
+    return;
+  }
+  const bad = r.code.filter((c) => !c.ok && c.kind === "element_max");
+  const isRc = (u: string) => /K\/W|kWh/.test(u); // Rc and the window energy balance: higher is better
+  const pop = el("div", "code-pop", `<b>Below the ${r.country.name} building code</b>
+    ${bad.map((c, i) => `<div class="cp-row"><span><b>${c.element}</b> ${fmt(c.value, 2)} · ${isRc(c.unit) ? "needs at least" : "may be at most"} ${fmt(c.limit, 2)} ${c.unit}</span><button class="btn small" data-fix="${i}">Fix: ${codeFix(c.element).label} →</button></div>`).join("")}
+    <p class="muted xsmall">Rc and energy balance: higher is better. U: lower is better. The label still counts, but a new house must meet these.</p>`);
+  pop.id = "code-pop";
+  pop.querySelectorAll<HTMLButtonElement>("[data-fix]").forEach((b) => (b.onclick = () => (pop.remove(), codeFix(bad[Number(b.dataset.fix)].element).go())));
+  const hud = $("#hud");
+  hud.after(pop);
+  pop.style.bottom = `${hud.offsetHeight + 22}px`; // just above the chips, however many lines they take
+  btn.setAttribute("aria-expanded", "true");
 }
 
 let shownScore: number | null = null;
@@ -971,12 +1012,15 @@ function fullScale(r: CountryResult) {
     const prev = i > 0 ? classes[i - 1].max : null;
     const range = c.max === null ? `> ${fmt(prev ?? 0)}` : `≤ ${fmt(c.max, c.max < 10 ? 1 : 0)}`;
     const me = i === r.label.index;
-    return `<div class="frow ${me ? "me" : ""}"><span class="fbar" style="width:${width}%;background:${classColor(i, n)}"><b>${fit(c.class)}</b>${me ? `<span class="fmark">your house · ${fmt(r.indicator.value, dec)}</span>` : ""}</span><span class="frange">${range}</span></div>`;
+    return `<div class="frow ${me ? "me" : ""}"><div class="fcell"><span class="fbar" style="flex-basis:${width}%;background:${classColor(i, n)}"><b>${fit(c.class)}</b></span>${me ? `<span class="fmark"><i aria-hidden="true"></i>your house <b>${fmt(r.indicator.value, dec)}</b></span>` : ""}</div><span class="frange">${range}</span></div>`;
   }).join("");
   return `<div class="group"><h3>Where your house lands <small>${niceUnit(r.indicator.unit)}</small></h3><div class="fscale">${rows}</div></div>`;
 }
 
 const MONTHS = "JFMAMJJASOND".split("");
+const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+/** 1,234 → 1.2k; small values whole. */
+const kShort = (v: number) => (v >= 995 ? `${(v / 1000).toFixed(v >= 9950 ? 0 : 1)}k` : fmt(v));
 
 function renderDetails(r: CountryResult) {
   const body = $("#step-body");
@@ -985,7 +1029,7 @@ function renderDetails(r: CountryResult) {
   const carriers = Object.entries(d).filter(([, v]) => v > 0.5).map(([k, v]) => `<dt>${k.replace("_", " ")}</dt><dd>${fmt(v)} kWh</dd>`).join("");
   const code = r.code.map((c) => {
     const isLimit = c.kind === "element_max" || c.kind === "envelope_average";
-    const higherBetter = /K\/W/.test(c.unit);
+    const higherBetter = /K\/W|kWh/.test(c.unit); // Rc and the window energy balance
     const scale = Math.max(c.value, c.limit) * 1.25 || 1;
     const tag = isLimit ? (c.ok ? "ok" : "not met") : c.ok ? "better" : "worse";
     const cls = c.ok ? "ok" : isLimit ? "bad" : "ref";
@@ -1027,9 +1071,10 @@ function renderDetails(r: CountryResult) {
         <dt>Energy bills (2026 prices)</dt><dd>${r.cost >= 0 ? "" : "−"}€${fmt(Math.abs(r.cost))}</dd>
       </dl></details>
     </div>
-    <div class="group"><h3>Heating need per month</h3>
-      <div class="months">${r.heatNeedMonthly.map((v) => `<i style="height:${(v / max) * 100}%" title="${fmt(v)} kWh"></i>`).join("")}</div>
+    <div class="group"><h3>Heating need per month <small>kWh</small></h3>
+      <div class="months">${r.heatNeedMonthly.map((v, i) => `<div class="mcol" title="${MONTH_NAMES[i]}: ${fmt(v)} kWh"><span>${v < 0.5 ? "" : kShort(v)}</span>${v < 0.5 ? "" : `<i style="height:calc((100% - 14px) * ${(v / max).toFixed(3)})"></i>`}</div>`).join("")}</div>
       <div class="months-l">${MONTHS.map((m) => `<span>${m}</span>`).join("")}</div>
+      <p class="muted xsmall">The heat the rooms need each month: ${fmt(r.heatNeed)} kWh a year, ${fmt(r.perM2.heatNeed)} per m². For scale, 1 kWh is a 1 kW heater on for an hour, or about 0.1 m³ of gas. Summer months are empty: the sun and the people inside keep the house warm.</p>
     </div>
     <div class="group"><h3>Building code <small>${codeUnit}</small></h3>
       ${code ? `<div class="code-rows">${code}</div><p class="muted xsmall">Bar: your house. Black line: the code ${bc?.kind === "element_max" ? "limit" : "value"}.</p>` : `<p class="muted small" style="margin:0">${bc?.note ?? "No element limits."}</p>`}
@@ -1045,12 +1090,30 @@ function renderDetails(r: CountryResult) {
         <dt>Thermal mass</dt><dd>${r.massKey.replace("_", " ")}</dd>
       </dl>
       <p class="small"><b>Method:</b> ${r.country.method}</p>
+      <p class="small"><b>Sources for this result:</b></p>
+      <ul class="src-list">${sourcesFor(r)}</ul>
       <p class="small"><b>Values that are not official yet:</b></p>
       <ul>${r.flags.map((f) => `<li>${f.item} <span class="flag ${f.status.split(" ")[0]}">${f.status}</span></li>`).join("") || "<li>none</li>"}</ul>
       <p class="small"><b>App assumptions:</b></p>
       <ul>${Object.entries(ASSUMPTIONS).map(([k, v]) => `<li>${k.replace(/_/g, " ")}: ${typeof v === "object" ? JSON.stringify(v) : v}</li>`).join("")}</ul>
-      <p class="small muted">One shared monthly balance (EN ISO 13790 / 52016 style) with each country's climate, usage conventions, floor area, energy factors and class limits. Checked against published NTA 8800 results for a Dutch reference house (heating + cooling need within 1-22%).</p>
+      <p class="small muted">One shared monthly balance (EN ISO 13790 / 52016 style) with each country's climate, usage conventions, floor area, energy factors and class limits. Classes are estimates and can differ by a class from an official certificate.</p>
     </details>`;
+}
+
+/** Every source behind this country's result, as links (label scale, energy factors, usage, code, climate). */
+function sourcesFor(r: CountryResult) {
+  const c = r.country as unknown as Record<string, any>;
+  const items: [string, string | undefined][] = [
+    [`Label scale (${c.label.version ?? c.scheme})`, c.label.source],
+    [`Floor area (${r.areaCode})`, c.floor_area?.source],
+    ...Object.entries(c.factors ?? {}).filter(([, v]) => v && typeof v === "object").map(([k, v]: [string, any]) => [`Energy factor: ${k.replace("_", " ")}`, v.source] as [string, string | undefined]),
+    ["Usage conventions", CONVENTIONS[r.country.id]?.source],
+    ["Building code", BUILDING_CODE[r.country.id]?.source],
+    [`Climate: ${r.climate.station}`, "https://joint-research-centre.ec.europa.eu/photovoltaic-geographical-information-system-pvgis_en"],
+  ];
+  const seen = new Map<string, string[]>();
+  for (const [what, url] of items) if (url && /^https?:/.test(url)) seen.set(url, [...(seen.get(url) ?? []), what]);
+  return [...seen].map(([url, what]) => `<li>${what.join(", ")}: <a href="${url}" target="_blank" rel="noopener">${new URL(url).hostname.replace(/^www\./, "")}</a></li>`).join("") || "<li>none</li>";
 }
 
 // ---------- Compare ----------
@@ -1114,36 +1177,24 @@ drawMap($("#map"), $("#map-tip"), pickCountry).catch((e) => ($("#map").textConte
 function shareBox(big = false) {
   const box = el("div", big ? "why share-box" : "group share-box", `
     <h3>Save or share your house</h3>
-    <p class="muted small">The link opens this exact house again, on any device. The image shows it with its label in every country.</p>
+    <p class="muted small">An image of your house with its label in every country.</p>
     <div class="row">
       <button class="btn primary" data-img>Create share image</button>
-      <button class="btn" data-link>Copy link</button>
     </div>
     <p class="muted small share-msg" aria-live="polite"></p>
     <div class="share-out hidden">
       <img alt="Share image: your house and its label in every country" />
+      <div class="row turn-row"><span class="muted small">Turn the house:</span><button class="btn" data-turn="-1" aria-label="Turn left">↺</button><button class="btn" data-turn="1" aria-label="Turn right">↻</button></div>
       <div class="row"><button class="btn primary" data-download>Download image</button><button class="btn hidden" data-native>Share…</button></div>
     </div>`);
   const msg = box.querySelector<HTMLElement>(".share-msg")!;
   const out = box.querySelector<HTMLElement>(".share-out")!;
   let blob: Blob | undefined;
   const fileName = () => `my-house-${country.toLowerCase()}-label-explorer.png`;
-  box.querySelector<HTMLButtonElement>("[data-link]")!.onclick = async () => {
-    const url = houseLink(house, country);
-    history.replaceState(null, "", url);
-    try {
-      if (TOUCH && navigator.share) await navigator.share({ title: "My house in Label Explorer", url });
-      else {
-        await navigator.clipboard.writeText(url);
-        msg.textContent = "Link copied. Paste it anywhere to open this house again; bookmarking this page works too.";
-      }
-    } catch {
-      msg.textContent = "The link is now in the address bar: bookmark or copy it from there.";
-    }
-  };
-  box.querySelector<HTMLButtonElement>("[data-img]")!.onclick = async () => {
+  const draw = async () => {
     if (!view) return;
     msg.textContent = "Drawing your image…";
+    history.replaceState(null, "", houseLink(house, country)); // bookmarking the page keeps the house
     view.render(house, { roof: true, systems: true });
     const rel = (r: CountryResult) => r.label.index / Math.max(1, r.label.classes.length - 1);
     const all = evaluateAll(house).sort((a, b) => rel(a) - rel(b));
@@ -1153,8 +1204,12 @@ function shareBox(big = false) {
     out.classList.remove("hidden");
     const file = new File([blob], fileName(), { type: "image/png" });
     out.querySelector<HTMLElement>("[data-native]")!.classList.toggle("hidden", !navigator.canShare?.({ files: [file] }));
+  };
+  box.querySelector<HTMLButtonElement>("[data-img]")!.onclick = async () => {
+    await draw();
     out.scrollIntoView({ behavior: "smooth", block: "nearest" });
   };
+  out.querySelectorAll<HTMLButtonElement>("[data-turn]").forEach((b) => (b.onclick = () => (view?.turn(Number(b.dataset.turn) as 1 | -1), draw())));
   out.querySelector<HTMLButtonElement>("[data-download]")!.onclick = () => {
     if (!blob) return;
     const a = document.createElement("a");

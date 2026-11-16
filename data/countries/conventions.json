@@ -62,7 +62,7 @@
  },
  "SK": {
   "air_change_h": 0.5,
-  "status": "official",
+  "status": "official (air change) / default (gains, hot water, setpoint)",
   "source": "https://static.slov-lex.sk/pdf/prilohy/SK/ZZ/2020/35/20200310_5228103-2.pdf"
  },
  "BE-BRU": {
@@ -75,7 +75,7 @@
   "setpoint_C": 20,
   "internal_gains_W_m2": 5,
   "air_change_h": 0.5,
-  "status": "official",
+  "status": "official (setpoint, gains, air change) / default (hot water)",
   "source": "https://mpgi.gov.hr/UserDocsImages/dokumenti/EnergetskaUcinkovitost/Algoritam_HRN_EN_13790_%202021.pdf",
   "note": "Algoritam HRN EN 13790 (2021): Tablica 1.1 family houses 20 C heating; 1.3.3.1 internal gains 5 W/m2 of A_K for residential; minimum n_inf + n_win 0.5 /h without mechanical ventilation (read 2026-11-16)"
  },
@@ -97,7 +97,7 @@
    "base_W": 80,
    "per_m3_W": 0.275
   },
-  "status": "official",
+  "status": "official (setpoint, gains, hot water) / default (ventilation)",
   "source": "https://energie.wallonie.be/files/PEB/Pour%20les%20professionnels/Outils/La%20r%c3%a9glementation%20wallonne%20-%20PEB/Exigences%20PEB/R%c3%a9gl.%20PEB%20apd%2001.01.26/AGW%20PEB%202026_Annexe%20A1%20(PER).pdf",
   "note": "AGW PEB 2026 Annexe A1 (PER): 18 C constant (5.x); internal gains 7.9.2 eq. 50: 0.67 V + 220 W (V > 192 m3), 1.41 V + 78 W below; hot water net need eq. 18: one bath (64 + 0.220 (V-192) W) + one kitchen sink (16 + 0.055 (V-192) W), minimum at 192 m3; V = protected volume. Ventilation equations are images: default kept (read 2026-11-16)"
  },

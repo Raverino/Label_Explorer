@@ -223,6 +223,7 @@ export class HouseView {
     ctx.textBaseline = "middle";
     ctx.fillText("N", 32, 34);
     const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas) }));
+    sprite.name = "compass";
     sprite.position.set(PLOT / 2, 1, -1.5);
     sprite.scale.set(1.6, 1.6, 1);
     this.scene.add(sprite);
@@ -460,9 +461,12 @@ export class HouseView {
 
   /** A PNG of the house from the current angle, w x h pixels; works while the view is hidden. */
   snapshot(w = 1000, h = 620): string {
+    this.controls.update(); // apply a turn made just before
     const pr = this.renderer.getPixelRatio();
     const hover = this.hover.visible;
     this.hover.visible = false;
+    const compass = this.scene.getObjectByName("compass");
+    if (compass) compass.visible = false; // the "N" floats beside the house in a picture
     this.renderer.setPixelRatio(1);
     this.renderer.setSize(w, h, false);
     const view = 22, aspect = w / h;
@@ -474,6 +478,7 @@ export class HouseView {
     this.renderer.render(this.scene, this.camera);
     const url = this.renderer.domElement.toDataURL("image/png");
     this.hover.visible = hover;
+    if (compass) compass.visible = true;
     this.renderer.setPixelRatio(pr);
     this.resize();
     return url;
