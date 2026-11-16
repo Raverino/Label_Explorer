@@ -7,7 +7,7 @@ import { Face, HouseView, Tool } from "./house3d";
 import { classColor } from "./labels";
 import { COUNTRY_FACTS, plainFor } from "./explain";
 import { drawMap } from "./map";
-import { SHARE_STYLES, ShareStyle, houseFromLink, houseLink, shareImage } from "./share";
+import { houseFromLink, houseLink, shareImage } from "./share";
 import { guideHTML } from "./guide";
 import { CONSTRUCTION_INFO, FRAME_INFO, GLAZING_INFO, MATERIAL_INFO, SYSTEM_INFO, frameSVG, glazingSVG, insulationSwatch, sectionLegend, sectionSVG, systemSVG, windowFrontSVG, windowSizeSVG } from "./visuals";
 
@@ -1174,18 +1174,16 @@ if (import.meta.env.DEV) (window as unknown as Record<string, unknown>).__lx = {
 drawMap($("#map"), $("#map-tip"), pickCountry).catch((e) => ($("#map").textContent = `Map failed to load: ${e}`));
 
 // ---------- Save and share ----------
-let shareStyle: ShareStyle = "tiers";
 function shareBox(big = false) {
   const box = el("div", big ? "why share-box" : "group share-box", `
     <h3>Save or share your house</h3>
-    <p class="muted small">An image of your house with its label in every country.</p>
+    <p class="muted small">An image of your house, its label here, and its best and worst label elsewhere in Europe.</p>
     <div class="row">
       <button class="btn primary" data-img>Create share image</button>
     </div>
     <p class="muted small share-msg" aria-live="polite"></p>
     <div class="share-out hidden">
       <img alt="Share image: your house and its label in every country" />
-      <div class="seg share-style" role="group" aria-label="Image style">${Object.entries(SHARE_STYLES).map(([k, v]) => `<button data-style="${k}" class="${k === shareStyle ? "on" : ""}">${v}</button>`).join("")}</div>
       <div class="row turn-row"><span class="muted small">Turn the house:</span><button class="btn" data-turn="-1" aria-label="Turn left">↺</button><button class="btn" data-turn="1" aria-label="Turn right">↻</button></div>
       <div class="row"><button class="btn primary" data-download>Download image</button><button class="btn hidden" data-native>Share…</button></div>
     </div>`);
@@ -1200,7 +1198,7 @@ function shareBox(big = false) {
     view.render(house, { roof: true, systems: true });
     const rel = (r: CountryResult) => r.label.index / Math.max(1, r.label.classes.length - 1);
     const all = evaluateAll(house).sort((a, b) => rel(a) - rel(b));
-    blob = await shareImage(view.snapshot(), evaluate(house, country), all, shareStyle);
+    blob = await shareImage(view.snapshot(), evaluate(house, country), all);
     msg.textContent = "";
     out.querySelector("img")!.src = URL.createObjectURL(blob);
     out.classList.remove("hidden");
@@ -1211,11 +1209,6 @@ function shareBox(big = false) {
     await draw();
     out.scrollIntoView({ behavior: "smooth", block: "nearest" });
   };
-  out.querySelectorAll<HTMLButtonElement>("[data-style]").forEach((b) => (b.onclick = () => {
-    shareStyle = b.dataset.style as ShareStyle;
-    out.querySelectorAll("[data-style]").forEach((x) => x.classList.toggle("on", x === b));
-    draw();
-  }));
   out.querySelectorAll<HTMLButtonElement>("[data-turn]").forEach((b) => (b.onclick = () => (view?.turn(Number(b.dataset.turn) as 1 | -1), draw())));
   out.querySelector<HTMLButtonElement>("[data-download]")!.onclick = () => {
     if (!blob) return;
