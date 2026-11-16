@@ -8,6 +8,7 @@ import { classColor } from "./labels";
 import { COUNTRY_FACTS, plainFor } from "./explain";
 import { drawMap } from "./map";
 import { houseFromLink, houseLink, shareImage } from "./share";
+import { guideHTML } from "./guide";
 import { CONSTRUCTION_INFO, FRAME_INFO, GLAZING_INFO, MATERIAL_INFO, SYSTEM_INFO, frameSVG, glazingSVG, insulationSwatch, sectionLegend, sectionSVG, systemSVG, windowFrontSVG, windowSizeSVG } from "./visuals";
 
 const $ = <T extends HTMLElement = HTMLElement>(sel: string, root: ParentNode = document) => root.querySelector(sel) as T;
@@ -62,7 +63,10 @@ function tw(s: string) {
 
 // ---------- Screens ----------
 type Screen = 1 | 2 | 3 | 4;
+let currentScreen: Screen = 1;
 function setStep(n: Screen) {
+  currentScreen = n;
+  $("#guide").classList.add("hidden");
   $("#pick").classList.toggle("hidden", n !== 1);
   $("#start").classList.toggle("hidden", n !== 2);
   $("#build").classList.toggle("hidden", n !== 3);
@@ -143,9 +147,10 @@ function renderStart() {
         <p>${plain.text}</p>
         ${fact ? `<p><b>${fact.icon} ${fact.title}.</b> ${fact.text}</p>` : ""}
         <div class="strip">${strip}</div>
-        <p class="muted small">Measured in ${probeResult.indicator.unit}. Green is the best class, red the worst.</p>
+        <p class="muted small">Measured in ${probeResult.indicator.unit}. Green is the best class, red the worst. <button class="link" data-guide-country="${c.id}">Who runs this label and how →</button></p>
       </div>
     </div>`;
+  $<HTMLButtonElement>("[data-guide-country]").onclick = () => showGuide(c.id);
   const host = $("#class-buttons");
   host.innerHTML = classes.map((cl, i) => `<button class="cls" data-i="${i}" style="background:${classColor(i, classes.length)}">${fit(cl.class)}</button>`).join("");
   $("#ready-note").textContent = tw("Click the class you want.");
@@ -1188,3 +1193,25 @@ function shareBox(big = false) {
     setStep(3);
   }
 }
+
+// ---------- Country guide ----------
+function showGuide(focus?: string) {
+  const from = currentScreen;
+  const g = $("#guide");
+  g.innerHTML = guideHTML();
+  ["#pick", "#start", "#build", "#compare"].forEach((s) => $(s).classList.add("hidden"));
+  $$("#steps li").forEach((li) => li.classList.remove("active"));
+  g.classList.remove("hidden");
+  g.scrollTop = 0;
+  $<HTMLButtonElement>("[data-guide-back]", g).onclick = () => setStep(from);
+  const open = (id: string) => {
+    const card = document.getElementById(`guide-${id}`) as HTMLDetailsElement | null;
+    if (!card) return;
+    card.open = true;
+    card.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+  $$<HTMLAnchorElement>("[data-guide-jump]", g).forEach((a) => (a.onclick = (e) => (e.preventDefault(), open(a.dataset.guideJump!))));
+  if (focus) requestAnimationFrame(() => open(focus));
+}
+$("#open-guide").onclick = () => showGuide();
+$("#compare-guide").onclick = () => showGuide(country);
